@@ -1,0 +1,41 @@
+/* Header Styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0c1e35; 
+    padding: 15px 20px; 
+    color: white; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+.custom-button {
+    background: transparent;
+    border: none; 
+    color: white; 
+    cursor: pointer; 
+    font-size: 1.5rem;
+    outline: none; 
+}
+
+.custom-button:focus {
+    outline: none; 
+    box-shadow: none; 
+}
+
+.custom-button:hover {
+    color: #f77f00;
+}
+
+header div {
+    display: flex;
+    align-items: center;
+}
+
+header p {
+    margin: 0; 
+    font-size: 1.25rem; 
+    font-weight: 600; 
+    color: #7d84ab; 
+}

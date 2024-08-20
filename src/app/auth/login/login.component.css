@@ -1,0 +1,144 @@
+.loginWrapper {
+    width: 100%;
+    height: 100vh;
+    background-color: #fff;
+    display: flex;
+  }
+  
+  .leftSideWrapper {
+    width: 45%;
+    background-image: url("../../../assets/Blue.png");
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .rightSideWrapper {
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .leftSideWrapper img {
+    width: 90%;
+  }
+  
+  
+  .rightSideWrapper .logoWrapper{
+      margin-bottom: 25px;
+  }
+  
+  .rightSideWrapper .logoWrapper img {
+      width: 90px;
+    }
+    
+  
+  .loginForm_Wrapper {
+    width: 500px;
+    margin-top: 20px;
+    padding: 35px 32px;
+    border-radius: 10px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .InputWrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 22px;
+    position: relative;
+  }
+  
+  
+  .rightSideWrapper .heading p {
+    font-size: 23px;
+    font-weight: 600;
+    margin-bottom: 35px;
+  }
+  
+  label {
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  
+  input {
+    border: 1px solid rgb(173, 171, 171);
+    border-radius: 7px;
+    font-size: 14px;
+    padding: 12px 10px;
+  }
+  
+  .password-input {
+      padding-right: 40px; 
+      box-sizing: border-box; 
+      position: relative;
+  }
+  
+  .password-toggle {
+    position: absolute;
+    margin-top: 40px;
+    right: 10px; 
+    cursor: pointer;
+    pointer-events: auto; 
+    z-index: 1; 
+  }
+  
+  input:focus {
+      outline: none; 
+      border: 2px solid #0dc5dd; 
+  }
+  
+  .submitbtnWrapper{
+      margin-top: 40px;
+  }
+  
+  .submitbtnWrapper button {
+      width: 100%;
+  }
+  
+  .text_Validator{
+    color: red;
+    font-weight: 500;
+    font-size: 13px;
+    margin-top: 3px;
+  }
+  
+  
+  
+  .goBackWrapper{
+    text-align: center;
+    margin-top: 18px;
+  }
+  
+  .goBackWrapper a{
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  
+  
+  @media (max-width : 1000px){
+    .loginForm_Wrapper{
+      width: 450px;
+    }
+  }
+  
+  
+  @media (max-width : 786px){
+    .leftSideWrapper{
+      display: none;
+    }
+  
+    .rightSideWrapper{
+      width: 100%;
+    }
+  
+    .loginForm_Wrapper{
+      width: 450px;
+    }
+  }

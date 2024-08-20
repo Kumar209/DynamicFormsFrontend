@@ -1,0 +1,46 @@
+<section class="loginWrapper">
+    <div class="leftSideWrapper">
+        <img src="../../../assets/left-side.png" alt="sidebanner_image">
+    </div>
+
+    <div class="rightSideWrapper">
+        <div class="logoWrapper">
+            <!-- <img src="../../../assets/Blue.png" alt="login_logo"> -->
+             <p style="font-size: 20px; font-weight: 700;" >Dynamic Forms</p>
+        </div>
+
+        <div class="loginForm_Wrapper">
+            <form [formGroup]="loginForm"  (submit)="onSubmitLoginForm()" >
+                <div class="heading">
+                    <p>Sign In</p>
+                </div>
+
+                <div class="emailWrapper InputWrapper">
+                    <label for="userEmail">Enter your email address</label>
+                    <input type="email" name="email" id="userEmail" formControlName="email" placeholder="Enter Email" autocomplete="off">
+                    <span class="text_Validator" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')" >* Email is required</span>
+                    <span class="text_Validator" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('pattern')" >* Must have a valid email</span>
+                </div>
+
+                <div class="passwordWrapper InputWrapper">
+                    <label for="userPassword">Enter your password</label>
+                    <input class="password-input" [type]="showPassword ? 'text' : 'password'" name="password" id="userPassword" formControlName="password" placeholder="Password" autocomplete="off">
+                    <span class="password-toggle" (click)="passwordShowHide()" 
+                        >
+                        <i class="fa-solid fa-eye" [hidden]="!showPassword"></i>
+                        <i class="fa-solid fa-eye-slash" [hidden]="showPassword"></i>
+                    </span>
+
+                    
+                    <span style="color: red;" class="text_Validator" *ngIf="loginForm.get('password')?.hasError('noSpaces')">* No spaces allowed</span>
+
+                    <span class="text_Validator" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')" >* Password is required</span>
+                </div>
+
+                <div class="submitbtnWrapper">
+                    <button [disabled]="!loginForm.valid" type="submit" class="btn btn-primary">Sign In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

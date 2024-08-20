@@ -1,0 +1,39 @@
+<p-sidebar [(visible)]="sidebarVisible" [showCloseIcon]="false" [style]="{backgroundColor: '#0c1e35'}">
+    <div class="heading">
+        <span>P</span>
+        <h3>Dynamic Forms</h3>
+    </div>
+
+
+    <div class="menu">
+        <ul>
+            <a routerLink="/admin/dashboard" (click)="closeSidebarOnClick()"  [ngClass]="{'active': isActive('/admin/dashboard')}">
+                <i class="pi pi-th-large" style="font-size: 1rem"></i>
+                <li>Dashboard</li>
+            </a>
+            <a routerLink="/admin/create-template" (click)="closeSidebarOnClick()"  [ngClass]="{'active': isActive('/admin/create-template')}">
+                <i class="pi pi-file-plus" style="font-size: 1rem"></i>
+                <li>Create Template</li>
+            </a>
+            <a routerLink="/admin/add-questions" (click)="closeSidebarOnClick()" [ngClass]="{'active': isActive('/admin/add-questions')}">
+                <i class="fa-solid fa-file-circle-question" style="font-size: 1rem"></i>
+                <li>Add Questions</li>
+            </a>
+            <a routerLink="/admin/existing-questions" (click)="closeSidebarOnClick()" [ngClass]="{'active': isActive('/admin/existing-questions')}">
+                <i class="fa-solid fa-file-circle-question" style="font-size: 1rem"></i>
+                <li>View Existing Questions</li>
+            </a>
+
+        </ul>
+    </div>
+
+
+    <div class="footer">
+        <hr>
+
+        <span>
+            <p>logout</p>
+            <i class="fa-solid fa-right-from-bracket" style="font-size: 1rem"></i>
+        </span>
+    </div>
+</p-sidebar>
