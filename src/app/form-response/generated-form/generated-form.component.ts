@@ -78,54 +78,54 @@ export class GeneratedFormComponent implements OnInit {
 
 
   
-  handleOptionSelect(event: any, option: any, section: any) {
-    const answerType = this.getAnswerTypeName(section.question.answerTypeId);
-    if (option && option.nextQuestionId) {
-      if (answerType === 'radio') {
-        section.questions = section.questions.filter((q : any) => q.id !== option.nextQuestionId);
-        this.loadNextQuestion(option.nextQuestionId, section);
-      } else if (answerType === 'checkbox') {
-        if (event.target.checked) {
-          this.loadNextQuestion(option.nextQuestionId, section);
-        } else {
-          const question = section.questions.find((q : any) => q.id === option.nextQuestionId);
-          section.questions = section.questions.filter((q : any) => q.id !== option.nextQuestionId);
-          if (question) {
-            section.questions = section.questions.filter((q : any) => q.id !== question.id);
-          }
-        }
-      } else if (answerType === 'dropdown' || answerType === 'multi-select') {
-        section.questions = section.questions.filter((q : any) => q.id !== option.nextQuestionId);
-        this.loadNextQuestion(option.nextQuestionId, section);
-      }
-    }
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // handleOptionSelect(event : any, option: any, section: any) {
-  //   if (option.nextQuestionId) {
-  //     this.loadNextQuestion(option.nextQuestionId, section);
+  // handleOptionSelect(event: any, option: any, section: any) {
+  //   const answerType = this.getAnswerTypeName(section.question.answerTypeId);
+  //   if (option && option.nextQuestionId) {
+  //     if (answerType === 'radio') {
+  //       section.questions = section.questions.filter((q : any) => q.id !== option.nextQuestionId);
+  //       this.loadNextQuestion(option.nextQuestionId, section);
+  //     } else if (answerType === 'checkbox') {
+  //       if (event.target.checked) {
+  //         this.loadNextQuestion(option.nextQuestionId, section);
+  //       } else {
+  //         const question = section.questions.find((q : any) => q.id === option.nextQuestionId);
+  //         section.questions = section.questions.filter((q : any) => q.id !== option.nextQuestionId);
+  //         if (question) {
+  //           section.questions = section.questions.filter((q : any) => q.id !== question.id);
+  //         }
+  //       }
+  //     } else if (answerType === 'dropdown' || answerType === 'multi-select') {
+  //       section.questions = section.questions.filter((q : any) => q.id !== option.nextQuestionId);
+  //       this.loadNextQuestion(option.nextQuestionId, section);
+  //     }
   //   }
   // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  handleOptionSelect(event : any, option: any, section: any) {
+    if (option.nextQuestionId) {
+      this.loadNextQuestion(option.nextQuestionId, section);
+    }
+  }
 
 
   

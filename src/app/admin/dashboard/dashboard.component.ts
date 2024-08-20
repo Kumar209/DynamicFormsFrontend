@@ -1,9 +1,13 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import { TableModule } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
+import { FormService } from '../service/form.service';
+import { ToastrService } from 'ngx-toastr';
+import { RouterModule } from '@angular/router';
+// import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 
 @Component({
@@ -12,15 +16,76 @@ import { FormsModule } from '@angular/forms';
   imports: [
     HttpClientModule,
     CommonModule,
+    TableModule,
+    PaginatorModule,
     FormsModule,
+    RouterModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
+  forms: any[] = []; // Array to store the forms data
+  selectedForm: any;
+  isDeleteModalVisible: boolean = false;
+  currentPage: number = 0;
+  itemsPerPage: number = 5;
+  searchTerm: string = '';
+
+  constructor(private formService: FormService, private toastr : ToastrService) {}
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.loadForms(); // Load forms data when component initializes
+  }
+
+
+  loadForms(): void {
+    this.formService.getAllForms().subscribe({
+      next : (res) => {
+        this.forms = Array.isArray(res.forms) ? res.forms : [];
+      },
+      error : (err) => {
+        this.toastr.error('Something went wrong');
+      }
+    }
+    );
+  }
+
+  get paginatedForms() {
+    if (!Array.isArray(this.forms)) {
+      return [];
+    }
+    
+    const filteredForms = this.forms.filter(form =>
+      form.formName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      form.description.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+    
+    const startIndex = this.currentPage * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return filteredForms.slice(startIndex, endIndex);
   }
   
+
+  onPageChange(event: any) {
+    this.currentPage = event.page;
+    this.itemsPerPage = event.rows;
+  }
+
+  openDeleteModal(form: any) {
+    this.selectedForm = form;
+    this.isDeleteModalVisible = true;
+  }
+
+  closeDeleteModal() {
+    this.isDeleteModalVisible = false;
+  }
+
+  deleteForm() {
+    // Handle deletion logic with backend integration
+    this.formService.deteteFormById(this.selectedForm.id).subscribe(() => {
+      this.forms = this.forms.filter(f => f !== this.selectedForm);
+      this.closeDeleteModal();
+    });
+  }
 }

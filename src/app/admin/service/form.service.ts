@@ -29,6 +29,6 @@ export class FormService {
   }
 
   updateForm(updateDetails: any) : Observable<any>{
-    return this.http.put<any>(`${this.apiUrl}/UpdateForm`, updateDetails);
+    return this.http.put<any>(`${this.apiUrl}/UpdateTemplate/${updateDetails.id}`, updateDetails);
   }
 }

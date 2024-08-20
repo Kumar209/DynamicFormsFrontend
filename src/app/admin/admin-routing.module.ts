@@ -6,6 +6,7 @@ import { CreateSourceTemplateComponent } from './create-source-template/create-s
 import { CreateQuestionComponent } from './create-question/create-question.component';
 import { ExistingQuestionListComponent } from './existing-question-list/existing-question-list.component';
 import { authGuard } from '../guards/auth.guard';
+import { EditSourceTemplateComponent } from './edit-source-template/edit-source-template.component';
 
 const routes: Routes = [
   // {
@@ -17,8 +18,8 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent, canActivate : [authGuard] },
       { path: 'create-template', component: CreateSourceTemplateComponent },
       { path: 'add-questions', component: CreateQuestionComponent },
-      { path: 'existing-questions', component : ExistingQuestionListComponent }
-
+      { path: 'existing-questions', component : ExistingQuestionListComponent },
+      { path : 'edit-template', component : EditSourceTemplateComponent },
     ]
   }
 ];

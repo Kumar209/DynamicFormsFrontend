@@ -2,7 +2,7 @@
     <div class="container">
         <div class="heading-wrapper">
             <!-- <i class="fa-solid fa-arrow-left"></i> -->
-            <p>Main Form Template</p>
+            <p>Update Form Template</p>
         </div>
 
 
@@ -100,7 +100,8 @@
                         
                             </div>
                         
-                    
+                
+                        
 
                             <div class="questions mt-3">
                                 <div class="question row mt-3" *ngFor="let question of getQuestionArray(i).controls; let j = index">
@@ -119,7 +120,7 @@
                         
                                     <div class="col-12 col-md-2 mt-md-0 mt-3">
                                         <span class="editIcon">
-                                            <i routerLink="/admin/edit-questions" class="fa-solid fa-pen-to-square"
+                                            <i routerLink="/admin/add-questions" class="fa-solid fa-pen-to-square"
                                                 data-toggle="tooltip" data-placement="top" title="edit-question"
                                                 style="color: rgb(146, 10, 237); font-size: 20px; cursor: pointer;">
                                             </i>
@@ -133,6 +134,7 @@
                                     </div>
                                   
                                 </div>
+
 
                                 <!-- <div class="question" *ngFor="let question of getQuestionArray(i).controls; let j = index">
                                     <div class="question-name-wrapper">

@@ -1,19 +1,19 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormControlName, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { CommonModule, FormatWidth } from '@angular/common';
-import { QuestionService } from '../service/question.service';
-import { ToastrService } from 'ngx-toastr';
+import { Component } from '@angular/core';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormService } from '../service/form.service';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { QuestionService } from '../service/question.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-create-source-template',
+  selector: 'app-edit-source-template',
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './create-source-template.component.html',
-  styleUrl: './create-source-template.component.css'
+  templateUrl: './edit-source-template.component.html',
+  styleUrl: './edit-source-template.component.css'
 })
-export class CreateSourceTemplateComponent implements OnInit {
+export class EditSourceTemplateComponent {
   mainForm! : FormGroup;
   sectionForm! : FormGroup;
   removeSectionById! : number;
@@ -28,18 +28,27 @@ export class CreateSourceTemplateComponent implements OnInit {
 
   selectedSectionIndex : number | null = null;
   selectedSection: any;
+
+  formId: number | null = null;
   
 
 
 
-
-  constructor(private router:Router, private formService : FormService, private questionService : QuestionService, private toastr : ToastrService) {}
+  constructor(private router:Router, private activatedRoute : ActivatedRoute, private formService : FormService, private questionService : QuestionService, private toastr : ToastrService) {}
 
 
 
 
   ngOnInit(): void {
     this.loadQuestions();
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.formId = params['id'];
+
+      if (this.formId) {
+        this.loadFormData(this.formId);
+      }
+    })
 
     this.mainForm = new FormGroup({
       formName : new FormControl('', [Validators.required]),
@@ -86,6 +95,53 @@ export class CreateSourceTemplateComponent implements OnInit {
   }
 
 
+  loadFormData(formId: number): void {
+    this.formService.getFormById(formId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          const formData = res.form;
+          this.populateForm(formData);
+        } else {
+          this.toastr.error(res.message);
+        }
+      },
+      error: (err) => {
+        this.toastr.error('Failed to load form data');
+      }
+    });
+  }
+
+
+  populateForm(formData: any): void {
+    console.log(formData);
+
+    this.mainForm.patchValue({
+      formName: formData.formName,
+      formDescription: formData.formDescription,
+      isPublish: formData.isPublish,
+      version: formData.version,
+    });
+
+    const sectionsArray = this.mainForm.get('sections') as FormArray;
+
+    formData.sections.forEach((section: any) => {
+      const questionsArray = new FormArray([]);
+      section.questions.forEach((questionId: number) => {
+        // questionsArray.push(new FormControl(questionId));
+      });
+
+      sectionsArray.push(new FormGroup({
+        sectionName: new FormControl(section.sectionName, [Validators.required]),
+        description: new FormControl(section.description),
+        slno: new FormControl(section.slno, [Validators.required]),
+        questions: questionsArray,
+        selectedQuestionId: new FormControl(null),
+      }));
+    });
+  }
+
+
+
 
 
   get sections(): FormArray {
@@ -101,8 +157,10 @@ export class CreateSourceTemplateComponent implements OnInit {
   }
 
   getQuestionText(questionId: number): string {
+    console.log(questionId);
+    console.log(this.questions);
     const question = this.questions.find(q => q.id === questionId);
-    return question ? question.question : '';
+    return question ? question.question : 'kkkkkkkkk';
   }
 
   
@@ -225,25 +283,25 @@ export class CreateSourceTemplateComponent implements OnInit {
       }))
       }
 
-      this.formService.createSourceTemplate(formDetails).subscribe({
-        next: (response) => {
-          if(response.success){
-            this.toastr.success(response.message);
-          }
+      // this.formService.createSourceTemplate(formDetails).subscribe({
+      //   next: (response) => {
+      //     if(response.success){
+      //       this.toastr.success(response.message);
+      //     }
 
-          else{
-            this.toastr.error(response.message);
-          }
-        },
-        error : (err) => {
-          if(err.error && err.error.message){
-            this.toastr.error(err.error.message);
-          }
-          else{
-            this.toastr.error('Something went wrong');
-          }
-        }
-      });
+      //     else{
+      //       this.toastr.error(response.message);
+      //     }
+      //   },
+      //   error : (err) => {
+      //     if(err.error && err.error.message){
+      //       this.toastr.error(err.error.message);
+      //     }
+      //     else{
+      //       this.toastr.error('Something went wrong');
+      //     }
+      //   }
+      // });
 
       
 
@@ -253,5 +311,4 @@ export class CreateSourceTemplateComponent implements OnInit {
       this.toastr.warning("invalid form");
     }
   }
-  
 }
