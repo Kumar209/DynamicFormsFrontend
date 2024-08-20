@@ -20,8 +20,8 @@ export class FormService {
   }
 
 
-  getFormById(id : number) : Observable<any>{
-    return this.http.get<any>(`${this.apiUrl}/GetFormById/${id}`);
+  getFormById(formId : number) : Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/GetFormById/${formId}`);
   }
 
   deteteFormById(id : number) : Observable<any>{

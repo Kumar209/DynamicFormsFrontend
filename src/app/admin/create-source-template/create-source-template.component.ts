@@ -18,8 +18,11 @@ export class CreateSourceTemplateComponent implements OnInit {
   sectionForm! : FormGroup;
   removeSectionById! : number;
 
+  allForms : any[] = [];
   questions: any[] = [];
+  
 
+  selectedForm: number | null = null; // To hold the selected form ID for copy
   
 
 
@@ -49,6 +52,14 @@ export class CreateSourceTemplateComponent implements OnInit {
     });
 
 
+    this.formService.getAllForms().subscribe({
+      next : (res)=> {
+        this.allForms = res.forms;
+      },
+      error : (err) => {
+        this.toastr.error('Something went wrong in fetching the all forms')
+      }
+    })
 
 
   }
@@ -143,7 +154,7 @@ export class CreateSourceTemplateComponent implements OnInit {
 
       const formDetails = {
         formName : this.mainForm.value.formName,
-        description : this.mainForm.value.description,
+        description : this.mainForm.value.formDescription,
         isPublish : this.published,
         version : 1,
         sections: this.mainForm.value.sections.map((section: any) => ({
@@ -154,25 +165,25 @@ export class CreateSourceTemplateComponent implements OnInit {
       }))
       }
 
-      this.formService.createSourceTemplate(formDetails).subscribe({
-        next: (response) => {
-          if(response.success){
-            this.toastr.success(response.message);
-          }
+      // this.formService.createSourceTemplate(formDetails).subscribe({
+      //   next: (response) => {
+      //     if(response.success){
+      //       this.toastr.success(response.message);
+      //     }
 
-          else{
-            this.toastr.error(response.message);
-          }
-        },
-        error : (err) => {
-          if(err.error && err.error.message){
-            this.toastr.error(err.error.message);
-          }
-          else{
-            this.toastr.error('Something went wrong');
-          }
-        }
-      });
+      //     else{
+      //       this.toastr.error(response.message);
+      //     }
+      //   },
+      //   error : (err) => {
+      //     if(err.error && err.error.message){
+      //       this.toastr.error(err.error.message);
+      //     }
+      //     else{
+      //       this.toastr.error('Something went wrong');
+      //     }
+      //   }
+      // });
 
       
 
