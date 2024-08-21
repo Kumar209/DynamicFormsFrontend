@@ -7,7 +7,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { FormService } from '../service/form.service';
 import { ToastrService } from 'ngx-toastr';
 import { RouterModule } from '@angular/router';
-// import { Ng2SearchPipeModule } from 'ng2-search-filter';
+
 
 
 @Component({
@@ -38,6 +38,13 @@ export class DashboardComponent implements OnInit {
     this.loadForms(); // Load forms data when component initializes
   }
 
+  // (data) => {
+  //   console.log('Fetched data:', data);
+  //   this.forms = Array.isArray(data) ? data : [];
+  // },
+  // (error) => {
+  //   console.error('Error fetching forms data', error);
+  // }
 
   loadForms(): void {
     this.formService.getAllForms().subscribe({
@@ -48,6 +55,7 @@ export class DashboardComponent implements OnInit {
         this.toastr.error('Something went wrong');
       }
     }
+     
     );
   }
 
@@ -55,16 +63,18 @@ export class DashboardComponent implements OnInit {
     if (!Array.isArray(this.forms)) {
       return [];
     }
-    
-    const filteredForms = this.forms.filter(form =>
-      form.formName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      form.description.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
-    
+  
+    const filteredForms = this.forms.filter(form => {
+      const formNameMatch = form.formName.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const descriptionMatch = form.description ? form.description.toLowerCase().includes(this.searchTerm.toLowerCase()) : false;
+      return formNameMatch || descriptionMatch;
+    });
+  
     const startIndex = this.currentPage * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     return filteredForms.slice(startIndex, endIndex);
   }
+  
   
 
   onPageChange(event: any) {
