@@ -102,50 +102,44 @@
                         
                     
 
-                            <div class="questions mt-3">
+                            <!-- <div class="questions mt-3">
                                 <div class="question row mt-3" *ngFor="let question of getQuestionArray(i).controls; let j = index">
                                     
                                     <div class="col-12 col-md-10">
-                                        <div class="question-name-wrapper">
-                                            <p>{{ getQuestionText(question.value) }}</p>
+                                        <div class="d-flex" style="flex-direction: row;">
+                                            <div class="question-name-wrapper">
+                                                <p>{{ getQuestionByValue(question.value)?.question || 'Question not found'}}</p>
+                                           </div>
+
+                                           <span class="answertype cold" style="margin-left: 15px; text-align: center; color: #fff;; background-color: #f77f00;  font: bold; padding: 0 10px; border-radius: 5px;">
+                                             <p>{{ getAnswerTypeText(question.value) }}</p>
+                                           </span>
                                         </div>
                                         
-                                        <div class="answer-type row" *ngIf="getQuestionOptions(question.value)">
-                                            <div *ngFor="let option of getQuestionOptions(question.value)">
-                                                <label>{{ option }}</label>
+                                        <div class="answer-type row" *ngIf="getQuestionOptinByValue(question.value)">
+                                            <div *ngFor="let option of getQuestionOptinByValue(question.value)">
+                                                <label>{{ option.optionValue }}</label>
                                             </div>
                                         </div>
                                     </div>
                         
                                     <div class="col-12 col-md-2 mt-md-0 mt-3">
                                         <span class="editIcon">
-                                            <i routerLink="/admin/edit-questions" class="fa-solid fa-pen-to-square"
+                                            <i [routerLink]="['/admin/edit-question']" [queryParams]="{ questionId: question.value }"  class="fa-solid fa-pen-to-square"
                                                 data-toggle="tooltip" data-placement="top" title="edit-question"
                                                 style="color: rgb(146, 10, 237); font-size: 20px; cursor: pointer;">
                                             </i>
                                         </span>
                             
                                         <span class="deleteIcon">
-                                            <i class="fa-solid fa-trash" data-bs-toggle="modal" data-bs-target="#deleteQuestion" data-toggle="tooltip"
+                                            <i class="fa-solid fa-trash" (click)="removeQuestionFromSection(i, j)" data-toggle="tooltip"
                                                 data-placement="top" title="delete-question" style="color: red; font-size: 20px; cursor: pointer;">
                                             </i>
                                         </span>
                                     </div>
                                   
                                 </div>
-
-                                <!-- <div class="question" *ngFor="let question of getQuestionArray(i).controls; let j = index">
-                                    <div class="question-name-wrapper">
-                                        <p>skdjf</p>
-                                        <p>{{ getQuestionText(question.value) }}</p>
-                                    </div>
-                                    <div class="answer-options" *ngIf="getQuestionOptions(question.value)">
-                                        <div *ngFor="let option of getQuestionOptions(question.value)">
-                                            <label>{{ option }}</label>
-                                        </div>
-                                    </div>
-                                </div> -->
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 

@@ -1,89 +1,49 @@
 <div class="container">
-    <div class="jumbotron">
-      <h1 class="display-6">Hello Admin</h1>
+  <div class="jumbotron">
+    <h1 class="display-6">Hello Admin</h1>
+  </div>
+  <div class="input-group">
+    <div class="left-wrapper">
+      <input type="search" class="form-control" [(ngModel)]="searchText" placeholder="Search Question" />
+      <button class="btn btn-primary" id="search" type="button" (click)="searchQuestions()">Search</button>
     </div>
-    <div class="input-group">
-      <div class="left-wrapper">
-        <input type="search" class="form-control" placeholder="Search Question" />
-        <button class="btn btn-primary" id="search" type="button">Search</button>
-      </div>
-      <div class="right-wrapper">
-        <select id="filter-select" class="ms-5">
-          <option value="">All</option>
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="Hard">Hard</option>
-        </select>
-        <button class="btn btn-primary" id="filter-btn">Filter</button>
-      </div>
-    </div>
-  
-    <div class="card">
-      <div class="card-header">
-        <h2>Existing Question List</h2>
-      </div>
-      <div class="card-body">
-        <table class="table table-bordered table-hover" id="question-table">
-          <tr>
-            <th class="scope">Question</th>
-            <th class="scope">ResponseType</th>
-            <th class="scope">Required</th>
-            <th class="scope">Action</th>
-          </tr>
-          <tr data-filter="Low">
-            <td>What is your name?</td>
-            <td>Text</td>
-            <td>Yes</td>
-            <td>
-              <button class="btn btn-primary">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-danger">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </td>
-          </tr>
-          <tr data-filter="Medium">
-            <td>How old are you?</td>
-            <td>Number</td>
-            <td>No</td>
-            <td>
-              <button class="btn btn-primary">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-danger">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </td>
-          </tr>
-          <tr data-filter="Hard">
-            <td>What is your favorite color?</td>
-            <td>Dropdown</td>
-            <td>Yes</td>
-            <td>
-              <button class="btn btn-primary">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-danger">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </td>
-          </tr>
-          <tr data-filter="Low">
-            <td>Do you like pizza?</td>
-            <td>Checkbox</td>
-            <td>No</td>
-            <td>
-              <button class="btn btn-primary">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-danger">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </td>
-          </tr>
-        </table>
-      </div>
+    <div class="right-wrapper">
+      <select id="responseType" [(ngModel)]="selectedResponseType">
+        <option selected value="" >All</option>
+        <option *ngFor="let type of answerTypes"  [value]="type.typeName">
+          {{ type.typeName }}
+        </option>
+      </select>
+      <button class="btn btn-primary" id="filter-btn" (click)="filterQuestions()">Filter</button>
     </div>
   </div>
-  
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Existing Question List</h2>
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered table-hover" id="question-table">
+        <tr>
+          <th class="scope">Question</th>
+          <th class="scope">ResponseType</th>
+          <th class="scope">Required</th>
+          <th class="scope">Action</th>
+        </tr>
+        <tr *ngFor="let question of questions">
+          <td>{{ question.question }}</td>
+          <td> {{ question.answerType }}</td>
+          <td>{{ question.required ? 'Yes' : 'No' }}</td>
+          <td>
+            <button class="btn btn-primary" (click)="navigateToEditQuestion(question)">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger" (click)="deleteQuestion(question.id)">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

@@ -32,19 +32,15 @@ export class DashboardComponent implements OnInit {
   itemsPerPage: number = 5;
   searchTerm: string = '';
 
+  selectedformId : any;
+
   constructor(private formService: FormService, private toastr : ToastrService) {}
 
   ngOnInit(): void {
     this.loadForms(); // Load forms data when component initializes
   }
 
-  // (data) => {
-  //   console.log('Fetched data:', data);
-  //   this.forms = Array.isArray(data) ? data : [];
-  // },
-  // (error) => {
-  //   console.error('Error fetching forms data', error);
-  // }
+
 
   loadForms(): void {
     this.formService.getAllForms().subscribe({
@@ -98,4 +94,22 @@ export class DashboardComponent implements OnInit {
       this.closeDeleteModal();
     });
   }
+
+
+  updateSelectedFormId(id : any){
+    this.selectedformId = id;
+  }
+
+
+  copyLink() {
+    const linkText = `http://localhost:4200/form-response/generated-form?formId=${this.selectedformId}`;
+    
+    // Use the Clipboard API to copy the text
+    navigator.clipboard.writeText(linkText).then(() => {
+      this.toastr.success('Link copied to clipboard!');
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+    });
+  }
+  
 }

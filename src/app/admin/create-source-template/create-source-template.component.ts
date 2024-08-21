@@ -18,6 +18,8 @@ export class CreateSourceTemplateComponent implements OnInit {
   sectionForm! : FormGroup;
   removeSectionById! : number;
 
+  answerTypes : any[] = [];
+
   allForms : any[] = [];
   questions: any[] = [];
   
@@ -38,8 +40,11 @@ export class CreateSourceTemplateComponent implements OnInit {
 
 
 
+
   ngOnInit(): void {
     this.loadQuestions();
+
+    this.loadAnswerTypes();
 
     this.mainForm = new FormGroup({
       formName : new FormControl('', [Validators.required]),
@@ -63,7 +68,7 @@ export class CreateSourceTemplateComponent implements OnInit {
         this.allForms = res.forms;
       },
       error : (err) => {
-        this.toastr.error('Something went wrong in fetching the all forms')
+        // this.toastr.error('Something went wrong in fetching the all forms')
       }
     })
 
@@ -85,6 +90,15 @@ export class CreateSourceTemplateComponent implements OnInit {
     });
   }
 
+  loadAnswerTypes(){
+    this.questionService.getAnswerTypes().subscribe({
+      next : (res) => {
+        this.answerTypes = res.data;
+      }
+    })
+  }
+
+ 
 
 
 
@@ -100,16 +114,27 @@ export class CreateSourceTemplateComponent implements OnInit {
     return questions as FormArray;
   }
 
-  getQuestionText(questionId: number): string {
-    const question = this.questions.find(q => q.id === questionId);
-    return question ? question.question : '';
+  // Convert string to number
+  getQuestionByValue(value: any) {
+    const id = +value; 
+    return this.questions.find(q => q.id === id);
   }
 
-  
-  getQuestionOptions(questionId: number): string[] {
-    const question = this.questions.find(q => q.id === questionId);
-    return question ? question.options : [];
+  getQuestionOptinByValue(value : any) {
+    const id = +value;
+    let question = this.questions.find(q => q.id === id);
+    let options = question.answerOptions;
+    return options;
   }
+
+  getAnswerTypeText(value : any){
+    const question = this.getQuestionByValue(value);
+
+    const typeText = this.answerTypes.find(a => a.id === question.answerTypeId);
+
+    return typeText.typeName;
+  }
+
   
 
 
@@ -139,6 +164,16 @@ export class CreateSourceTemplateComponent implements OnInit {
     }
     this.sectionForm.reset();
   }
+
+  removeQuestionFromSection(sectionIndex: number, questionIndex: number): void {
+    const section = this.sections.at(sectionIndex) as FormGroup; 
+    const questionsArray = section.get('questions') as FormArray; 
+
+    if (questionsArray && questionsArray.length > 0) {
+        questionsArray.removeAt(questionIndex); 
+        this.toastr.success('Question removed successfully.'); 
+    }
+}
 
 
   editSection(index: number) {
