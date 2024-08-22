@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { QuestionService } from '../service/question.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-existing-question-list',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink],
   templateUrl: './existing-question-list.component.html',
   styleUrls: ['./existing-question-list.component.css']
 })

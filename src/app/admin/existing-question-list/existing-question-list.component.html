@@ -35,7 +35,7 @@
           <td> {{ question.answerType }}</td>
           <td>{{ question.required ? 'Yes' : 'No' }}</td>
           <td>
-            <button class="btn btn-primary" (click)="navigateToEditQuestion(question)">
+            <button class="btn btn-primary" [routerLink]="['/admin/edit-question']" [queryParams]="{ questionid: question.id }">
               <i class="fas fa-edit"></i>
             </button>
             <button class="btn btn-danger" (click)="deleteQuestion(question.id)">

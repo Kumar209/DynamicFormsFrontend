@@ -240,10 +240,13 @@ export class CreateSourceTemplateComponent implements OnInit {
     if (selectedQuestionId) {
         const questionsArray = section.get('questions') as FormArray;
 
-        // Check if the question is already added to avoid duplicates
-        if (!questionsArray.controls.some(control => control.value === selectedQuestionId)) {
+        // Convert selectedQuestionId to string
+         const questionIdString = Number(selectedQuestionId);
 
-            questionsArray.push(new FormControl(selectedQuestionId));
+        // Check if the question is already added to avoid duplicates
+        if (!questionsArray.controls.some(control => control.value === questionIdString)) {
+
+            questionsArray.push(new FormControl(questionIdString));
             section.get('selectedQuestionId')?.setValue(null); // Reset the selected question after adding
             console.log(`Added question ID: ${selectedQuestionId} to section ${index}`);
             
