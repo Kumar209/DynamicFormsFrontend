@@ -3,6 +3,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { SharedService } from '../service/shared.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../auth/service/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,7 +18,8 @@ export class SidebarComponent implements OnInit {
   constructor(
     private sharedService: SharedService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private authService : AuthService
   ) {
     this.sidebarVisible = sharedService.sidebarVisible;
   }
@@ -35,5 +37,10 @@ export class SidebarComponent implements OnInit {
 
   isActive(route: string): boolean {
     return this.router.url === route;
+  }
+
+
+  logout() : void {
+    this.authService.logout();
   }
 }

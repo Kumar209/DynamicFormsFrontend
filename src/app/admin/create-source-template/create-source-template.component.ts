@@ -25,10 +25,11 @@ export class CreateSourceTemplateComponent implements OnInit {
   
 
   
-  selectedForm: number | null = null; // To hold the selected form ID for copy
+  selectedFormId: number = 0; // To hold the selected form ID for copy
+  fetchedForm : any;
 
 
-  selectedSectionIndex : number | null = null;
+  selectedSectionIndex : number | null = null;  //To hold the selected section Id
   selectedSection: any;
   
 
@@ -39,6 +40,7 @@ export class CreateSourceTemplateComponent implements OnInit {
 
 
 
+  
 
 
   ngOnInit(): void {
@@ -76,11 +78,54 @@ export class CreateSourceTemplateComponent implements OnInit {
   }
 
 
+  onFormChange(event: any) {
+    this.selectedFormId = event.target.value;
+}
+
+
+
+  loadFormCopy() {
+    if (!this.selectedFormId) {
+      console.error('Selected form ID is undefined or null');
+      return;
+    }
+
+    this.formService.getFormById(this.selectedFormId).subscribe({
+      next : (res) => {
+        if(res.success){
+          this.fetchedForm = res.form;
+          console.log(this.fetchedForm);
+          this.populateSectionsAndQuestions(this.fetchedForm.sections);
+        }
+        else {
+          this.toastr.error('Error fetching');
+        }
+      }
+    })
+  }
+
+  populateSectionsAndQuestions(sections: any[]) {
+    // Clear existing sections
+    // this.sections.clear();
+
+    sections.forEach(section => {
+        const sectionGroup = new FormGroup({
+            sectionName: new FormControl(section.sectionName),
+            description: new FormControl(section.description),
+            slno: new FormControl(section.slno),
+            questions: new FormArray(section.questions.map((question : any) => new FormControl(question.id))),
+            selectedQuestionId: new FormControl(null),
+        });
+
+        this.sections.push(sectionGroup);
+    });
+}
+
+
   loadQuestions() {
     this.questionService.getAllQuestion().subscribe((res: any) => {
       if(res.success){
         this.questions = res.questions; 
-        console.log(this.questions);
 
       }
       else{
@@ -165,15 +210,11 @@ export class CreateSourceTemplateComponent implements OnInit {
     this.sectionForm.reset();
   }
 
-  removeQuestionFromSection(sectionIndex: number, questionIndex: number): void {
-    const section = this.sections.at(sectionIndex) as FormGroup; 
-    const questionsArray = section.get('questions') as FormArray; 
-
-    if (questionsArray && questionsArray.length > 0) {
-        questionsArray.removeAt(questionIndex); 
-        this.toastr.success('Question removed successfully.'); 
+     //Removing section from sectionForm
+     removeSection(index: number): void {
+      this.sections.removeAt(index); 
     }
-}
+
 
 
   editSection(index: number) {
@@ -191,6 +232,7 @@ export class CreateSourceTemplateComponent implements OnInit {
 
 
 
+  //Adding question to section
   addQuestionToSection(index: number): void {
     const section = this.sections.at(index) as FormGroup; // Get the specific section
     const selectedQuestionId = section.get('selectedQuestionId')?.value; // Get the selected question ID
@@ -215,20 +257,22 @@ export class CreateSourceTemplateComponent implements OnInit {
     }
 }
 
+removeQuestionFromSection(sectionIndex: number, questionIndex: number): void {
+  const section = this.sections.at(sectionIndex) as FormGroup; 
+  const questionsArray = section.get('questions') as FormArray; 
 
-
-
-
-
-
-
-  removeSection(index: number): void {
-    this.sections.removeAt(index); 
+  if (questionsArray && questionsArray.length > 0) {
+      questionsArray.removeAt(questionIndex); 
+      this.toastr.success('Question removed successfully.'); 
   }
+}
+
+
 
  
 
 
+  //Updating the variable removeSectionById for delete that section
   updateSectionIdToRemove(id : number){
     this.removeSectionById = id;
   }

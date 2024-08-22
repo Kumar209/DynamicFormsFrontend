@@ -3,14 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../service/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -53,7 +53,6 @@ export class LoginComponent implements OnInit {
         next : (res) => {
           if(res.success){
             this.router.navigate(['admin/dashboard']);
-            localStorage.setItem(this.service.authSecretKey, res.token);
             this.toastr.success(res.message, 'Successfull!');
           }
           

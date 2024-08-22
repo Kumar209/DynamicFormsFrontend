@@ -29,14 +29,14 @@
 
                     <div class="copy-form-wrapper row">
                         <div class="input-wrapper col-12 col-md-9">
-                            <label for="selectForm">Select Form</label>
-                            <select id="selectForm" [(ngModel)]="selectedForm">
+                            <label for="selectedFormId">Select Form</label>
+                            <select id="selectedFormId" (change)="onFormChange($event)">
                                 <option selected value="" disabled>Select Existing Form</option>
                                 <option *ngFor="let form of allForms" [value]="form.id">{{ form.formName }}</option>
-                              </select>
+                            </select>
                         </div>
                         <div class="copy-btn-wrapper col-12 col-md-3 mt-md-0 mt-3 pt-md-4">
-                            <button type="button">Copy Form</button>
+                            <button type="button" (click)="loadFormCopy()" >Copy Form</button>
                         </div>
                     </div>
 
@@ -102,23 +102,23 @@
                         
                     
 
-                            <!-- <div class="questions mt-3">
+                            <div class="questions mt-3">
                                 <div class="question row mt-3" *ngFor="let question of getQuestionArray(i).controls; let j = index">
                                     
                                     <div class="col-12 col-md-10">
                                         <div class="d-flex" style="flex-direction: row;">
                                             <div class="question-name-wrapper">
-                                                <p>{{ getQuestionByValue(question.value)?.question || 'Question not found'}}</p>
+                                                <p> <span>{{j + 1}} :</span> {{ getQuestionByValue(question.value)?.question || 'Question not found'}}</p>
                                            </div>
 
-                                           <span class="answertype cold" style="margin-left: 15px; text-align: center; color: #fff;; background-color: #f77f00;  font: bold; padding: 0 10px; border-radius: 5px;">
+                                           <span class="answertype cold" style="height: 25px; margin-left: 15px; text-align: center; color: #fff;; background-color: #f77f00;  font: bold; padding: 0 10px; border-radius: 5px;">
                                              <p>{{ getAnswerTypeText(question.value) }}</p>
                                            </span>
                                         </div>
                                         
                                         <div class="answer-type row" *ngIf="getQuestionOptinByValue(question.value)">
                                             <div *ngFor="let option of getQuestionOptinByValue(question.value)">
-                                                <label>{{ option.optionValue }}</label>
+                                                <label> {{ option.optionValue }}</label>
                                             </div>
                                         </div>
                                     </div>
@@ -139,7 +139,7 @@
                                     </div>
                                   
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
 
