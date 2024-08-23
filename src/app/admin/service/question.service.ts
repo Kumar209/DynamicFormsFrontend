@@ -28,7 +28,7 @@ export class QuestionService {
   }
 
   deleteQuestion(id : number) : Observable<any>{
-    return this.http.delete<any>(`${this.apiUrl}/RemoveQuestionById${id}`);
+    return this.http.delete<any>(`${this.apiUrl}/RemoveQuestionById/${id}`);
   }
 
 

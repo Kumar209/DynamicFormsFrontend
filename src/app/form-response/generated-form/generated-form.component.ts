@@ -174,6 +174,8 @@ export class GeneratedFormComponent implements OnInit {
   answerTypes: any[] = [];
   formId : any;
 
+  selectedAnswers: { [sectionId: string]: { [questionId: string]: any } } = {};
+
 
 
   constructor(private formService : FormService, private questionService : QuestionService,  private responseService : ResponseService, private router : Router, private activatedRoute : ActivatedRoute, private toastr : ToastrService) {}
@@ -240,7 +242,7 @@ export class GeneratedFormComponent implements OnInit {
   
 
   
-  
+
 }
 
 

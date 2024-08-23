@@ -19,6 +19,8 @@ export class ExistingQuestionListComponent implements OnInit {
   searchText = '';
   selectedResponseType: any;
   answerTypes: any[] = [];
+
+  questionIdToDelete! : any;
   
   constructor(private toastr: ToastrService ,private questionService: QuestionService, private router: Router) { }
   ngOnInit(): void {
@@ -33,9 +35,7 @@ export class ExistingQuestionListComponent implements OnInit {
     });
   }
 
-  navigateToEditQuestion(question: any): void {
-    this.router.navigate(['/admin/edit-question', question.id], { state: { question: question } });
-  }
+
 
   getQuestions(): void {
     this.questionService.getAllQuestion().subscribe(response => {
@@ -45,30 +45,31 @@ export class ExistingQuestionListComponent implements OnInit {
         const answerType = this.answerTypes.find(type => type.id === question.answerTypeId);
         return { ...question, answerType: answerType.typeName }; // Map answerType
       });
-      console.log(this.questions);
       });
 
-     console.log(this.questions);
   }
 
   filterQuestions() {
     if (this.selectedResponseType === '') {
       this.questions = this.allQuestions;
-      console.log(this.questions); // reset to all questions
-    } else {
+    } 
+    else {
       this.questions = this.allQuestions.map(question => {
         const answerType = this.answerTypes.find(type => type.id === question.answerTypeId);
         return { ...question, answerType: answerType.typeName }; // Map answerType
       }).filter((question: any) => {
-        console.log(question );
 
         return question.answerType === this.selectedResponseType;
       });
     }
   }
 
-  deleteQuestion(id: number) {
-    this.questionService.deleteQuestion(id).subscribe({
+  updateQuestionIdToDelete(id : number){
+    this.questionIdToDelete = id;
+  }
+
+  deleteQuestion() {
+    this.questionService.deleteQuestion(this.questionIdToDelete).subscribe({
       next: (response: any) => {
         if (response.success) {
           this.toastr.success('Question deleted successfully!');
@@ -83,6 +84,8 @@ export class ExistingQuestionListComponent implements OnInit {
       }
     });
   }
+
+
   searchQuestions() {
     this.questions = this.allQuestions.filter((question: any) => {
       return question.question.toLowerCase().includes(this.searchText.toLowerCase());

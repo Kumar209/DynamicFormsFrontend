@@ -10,7 +10,7 @@
             <div class="card shadow border-0 mb-7">
                 <div class="card-header">
                   <div class="header-title">
-                    <h5 class="mb-0">Hello Admin</h5>
+                    <h3 class="mb-0">All responses of single form</h3>
                   </div>
                   <div class="search-container">
                     <form class="example">
@@ -27,7 +27,7 @@
                       <tr>
                         <th scope="col" >Id</th>
                         <th scope="col">Form Id</th>
-                        <th scope="col">Email</th>
+                        <th scope="col">Email/Anonymous</th>
                         <th scope="col">View Response</th>
                         <th scope="col">Action</th>
                       </tr>
@@ -82,7 +82,7 @@
               </div>
               
               <!-- Delete Confirmation Modal -->
-              <!-- <div *ngIf="isDeleteModalVisible" class="modal fade show" style="display: block;" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+              <div *ngIf="isDeleteModalVisible" class="modal fade show" style="display: block;" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
@@ -92,15 +92,15 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                      Are you sure you want to delete this form: {{ selectedForm?.formName }}?
+                      Are you sure you want to delete this response?
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
-                      <button type="button" class="btn btn-danger" (click)="deleteForm()">Delete</button>
+                      <button type="button" class="btn btn-danger" (click)="deleteresponse()">Delete</button>
                     </div>
                   </div>
                 </div>
-              </div> -->
+              </div>
               
               <!-- Backdrop -->
               <div *ngIf="isDeleteModalVisible" class="modal-backdrop fade show"></div>

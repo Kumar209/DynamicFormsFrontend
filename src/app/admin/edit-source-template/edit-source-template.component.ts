@@ -18,37 +18,38 @@ export class EditSourceTemplateComponent {
   sectionForm! : FormGroup;
   removeSectionById! : number;
 
+  answerTypes : any[] = [];
+
   allForms : any[] = [];
   questions: any[] = [];
   
 
   
-  selectedForm: number | null = null; // To hold the selected form ID for copy
+  selectedFormId: number = 0; // To hold the selected form ID for copy
+  fetchedForm : any;
 
 
-  selectedSectionIndex : number | null = null;
+  selectedSectionIndex : number | null = null;  //To hold the selected section Id
   selectedSection: any;
+
 
   formId: number | null = null;
   
 
 
 
-  constructor(private router:Router, private activatedRoute : ActivatedRoute, private formService : FormService, private questionService : QuestionService, private toastr : ToastrService) {}
+
+  constructor(private router:Router, private activatedRoute: ActivatedRoute, private formService : FormService, private questionService : QuestionService, private toastr : ToastrService) {}
 
 
+
+  
 
 
   ngOnInit(): void {
     this.loadQuestions();
 
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.formId = params['id'];
-
-      if (this.formId) {
-        this.loadFormData(this.formId);
-      }
-    })
+    this.loadAnswerTypes();
 
     this.mainForm = new FormGroup({
       formName : new FormControl('', [Validators.required]),
@@ -67,12 +68,21 @@ export class EditSourceTemplateComponent {
     });
 
 
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.formId = params['formId'];
+
+      if (this.formId) {
+        this.loadFormData(this.formId);
+      }
+    });
+
+
     this.formService.getAllForms().subscribe({
       next : (res)=> {
         this.allForms = res.forms;
       },
       error : (err) => {
-        this.toastr.error('Something went wrong in fetching the all forms')
+        // this.toastr.error('Something went wrong in fetching the all forms')
       }
     })
 
@@ -80,23 +90,10 @@ export class EditSourceTemplateComponent {
   }
 
 
-  loadQuestions() {
-    this.questionService.getAllQuestion().subscribe((res: any) => {
-      if(res.success){
-        this.questions = res.questions; 
-        console.log(this.questions);
-
-      }
-      else{
-        this.toastr.error(res.message);
-        this.questions = [];
-      }
-    });
-  }
-
-
   loadFormData(formId: number): void {
+    console.log(formId);
     this.formService.getFormById(formId).subscribe({
+    
       next: (res) => {
         if (res.success) {
           const formData = res.form;
@@ -112,12 +109,11 @@ export class EditSourceTemplateComponent {
   }
 
 
+  //Function used to patch the values of single form
   populateForm(formData: any): void {
-    console.log(formData);
-
     this.mainForm.patchValue({
-      formName: formData.formName,
-      formDescription: formData.formDescription,
+      formName: formData.name,
+      formDescription: formData.description,
       isPublish: formData.isPublish,
       version: formData.version,
     });
@@ -125,22 +121,95 @@ export class EditSourceTemplateComponent {
     const sectionsArray = this.mainForm.get('sections') as FormArray;
 
     formData.sections.forEach((section: any) => {
-      const questionsArray = new FormArray([]);
-      section.questions.forEach((questionId: number) => {
-        // questionsArray.push(new FormControl(questionId));
+      const questionsArray = new FormArray<FormControl<string | null>>([]); 
+      
+      section.questions.forEach((question: any) => {
+        const convertedQuestionId = String(question.id);
+        questionsArray.push(new FormControl<string | null>(convertedQuestionId)); 
       });
 
       sectionsArray.push(new FormGroup({
+        id: new FormControl(section.id),
         sectionName: new FormControl(section.sectionName, [Validators.required]),
         description: new FormControl(section.description),
         slno: new FormControl(section.slno, [Validators.required]),
         questions: questionsArray,
-        selectedQuestionId: new FormControl(null),
+        selectedQuestionId: new FormControl<number | null>(null),
       }));
     });
   }
 
 
+
+
+  onFormChange(event: any) {
+    this.selectedFormId = event.target.value;
+  }
+
+
+
+  loadFormCopy() {
+    if (!this.selectedFormId) {
+      console.error('Selected form ID is undefined or null');
+      return;
+    }
+
+    this.formService.getFormById(this.selectedFormId).subscribe({
+      next : (res) => {
+        if(res.success){
+          this.fetchedForm = res.form;
+          console.log(this.fetchedForm);
+          this.populateSectionsAndQuestions(this.fetchedForm.sections);
+        }
+        else {
+          this.toastr.error('Error fetching');
+        }
+      }
+    })
+  }
+
+  //Function used to populate sections and their respesct questions using copy
+  populateSectionsAndQuestions(sections: any[]) {
+    // Clear existing sections
+    // this.sections.clear();
+
+    sections.forEach(section => {
+        const sectionGroup = new FormGroup({
+          // id: new FormControl(section.id ?? 0),
+            sectionName: new FormControl(section.sectionName),
+            description: new FormControl(section.description),
+            slno: new FormControl(section.slno),
+            questions: new FormArray(section.questions.map((question : any) => new FormControl(question.id.toString()))),
+            selectedQuestionId: new FormControl(null),
+        });
+
+        this.sections.push(sectionGroup);
+    });
+}
+
+
+  loadQuestions() {
+    this.questionService.getAllQuestion().subscribe((res: any) => {
+      if(res.success){
+        this.questions = res.questions; 
+
+      }
+      else{
+        this.toastr.error(res.message);
+        this.questions = [];
+      }
+    });
+  }
+
+  loadAnswerTypes(){
+    this.questionService.getAnswerTypes().subscribe({
+      next : (res) => {
+        this.answerTypes = res.data;
+      }
+    })
+  }
+
+ 
 
 
 
@@ -156,18 +225,27 @@ export class EditSourceTemplateComponent {
     return questions as FormArray;
   }
 
-  getQuestionText(questionId: number): string {
-    console.log(questionId);
-    console.log(this.questions);
-    const question = this.questions.find(q => q.id === questionId);
-    return question ? question.question : 'kkkkkkkkk';
+  // Convert string to number
+  getQuestionByValue(value: any) {
+    const id = +value; 
+    return this.questions.find(q => q.id === id);
   }
 
-  
-  getQuestionOptions(questionId: number): string[] {
-    const question = this.questions.find(q => q.id === questionId);
-    return question ? question.options : [];
+  getQuestionOptinByValue(value : any) {
+    const id = +value;
+    let question = this.questions.find(q => q.id === id);
+    let options = question.answerOptions;
+    return options;
   }
+
+  getAnswerTypeText(value : any){
+    const question = this.getQuestionByValue(value);
+
+    const typeText = this.answerTypes.find(a => a.id === question.answerTypeId);
+
+    return typeText.typeName;
+  }
+
   
 
 
@@ -198,6 +276,12 @@ export class EditSourceTemplateComponent {
     this.sectionForm.reset();
   }
 
+     //Removing section from sectionForm
+     removeSection(index: number): void {
+      this.sections.removeAt(index); 
+    }
+
+
 
   editSection(index: number) {
     this.selectedSectionIndex = index;
@@ -214,12 +298,15 @@ export class EditSourceTemplateComponent {
 
 
 
+  //Adding question to section
   addQuestionToSection(index: number): void {
     const section = this.sections.at(index) as FormGroup; // Get the specific section
     const selectedQuestionId = section.get('selectedQuestionId')?.value; // Get the selected question ID
 
     if (selectedQuestionId) {
         const questionsArray = section.get('questions') as FormArray;
+
+        
 
         // Check if the question is already added to avoid duplicates
         if (!questionsArray.controls.some(control => control.value === selectedQuestionId)) {
@@ -238,20 +325,22 @@ export class EditSourceTemplateComponent {
     }
 }
 
+removeQuestionFromSection(sectionIndex: number, questionIndex: number): void {
+  const section = this.sections.at(sectionIndex) as FormGroup; 
+  const questionsArray = section.get('questions') as FormArray; 
 
-
-
-
-
-
-
-  removeSection(index: number): void {
-    this.sections.removeAt(index); 
+  if (questionsArray && questionsArray.length > 0) {
+      questionsArray.removeAt(questionIndex); 
+      this.toastr.success('Question removed successfully.'); 
   }
+}
+
+
 
  
 
 
+  //Updating the variable removeSectionById for delete that section
   updateSectionIdToRemove(id : number){
     this.removeSectionById = id;
   }
@@ -271,11 +360,13 @@ export class EditSourceTemplateComponent {
       console.log(this.mainForm.value);
 
       const formDetails = {
+        id : this.formId,
         formName : this.mainForm.value.formName,
         description : this.mainForm.value.formDescription,
         isPublish : this.published,
         version : 1,
         sections: this.mainForm.value.sections.map((section: any) => ({
+          id : section.id ?? 0,
           sectionName: section.sectionName,
           description: section.description,
           slno: section.slno,
@@ -283,25 +374,26 @@ export class EditSourceTemplateComponent {
       }))
       }
 
-      // this.formService.createSourceTemplate(formDetails).subscribe({
-      //   next: (response) => {
-      //     if(response.success){
-      //       this.toastr.success(response.message);
-      //     }
+      this.formService.updateForm(formDetails).subscribe({
+        next: (response) => {
+          if(response.success){
+            this.toastr.success(response.message);
+            this.router.navigate(['/admin/dashboard']);
+          }
 
-      //     else{
-      //       this.toastr.error(response.message);
-      //     }
-      //   },
-      //   error : (err) => {
-      //     if(err.error && err.error.message){
-      //       this.toastr.error(err.error.message);
-      //     }
-      //     else{
-      //       this.toastr.error('Something went wrong');
-      //     }
-      //   }
-      // });
+          else{
+            this.toastr.error(response.message);
+          }
+        },
+        error : (err) => {
+          if(err.error && err.error.message){
+            this.toastr.error(err.error.message);
+          }
+          else{
+            this.toastr.error('Something went wrong');
+          }
+        }
+      });
 
       
 
@@ -311,4 +403,5 @@ export class EditSourceTemplateComponent {
       this.toastr.warning("invalid form");
     }
   }
+  
 }

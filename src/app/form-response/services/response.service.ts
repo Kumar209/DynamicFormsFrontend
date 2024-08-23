@@ -32,6 +32,9 @@ export class ResponseService {
   }
 
 
+  removeResponse(id : any) :Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/DeleteResponse/${id}`)
+  }
 
 
 

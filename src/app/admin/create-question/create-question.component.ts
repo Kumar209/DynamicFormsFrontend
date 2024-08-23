@@ -131,6 +131,7 @@ export class CreateQuestionComponent implements OnInit {
             this.toastr.success(response.message);
             this.questionForm.reset();
             this.getOptions().clear();
+            this.router.navigate(['/admin/existing-questions']);
           }
           else {
             this.toastr.error(response.message);

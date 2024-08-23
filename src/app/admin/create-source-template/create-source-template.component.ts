@@ -113,7 +113,7 @@ export class CreateSourceTemplateComponent implements OnInit {
             sectionName: new FormControl(section.sectionName),
             description: new FormControl(section.description),
             slno: new FormControl(section.slno),
-            questions: new FormArray(section.questions.map((question : any) => new FormControl(question.id))),
+            questions: new FormArray(section.questions.map((question : any) => new FormControl(question.id.toString()))),
             selectedQuestionId: new FormControl(null),
         });
 
@@ -240,13 +240,12 @@ export class CreateSourceTemplateComponent implements OnInit {
     if (selectedQuestionId) {
         const questionsArray = section.get('questions') as FormArray;
 
-        // Convert selectedQuestionId to string
-         const questionIdString = Number(selectedQuestionId);
+        
 
         // Check if the question is already added to avoid duplicates
-        if (!questionsArray.controls.some(control => control.value === questionIdString)) {
+        if (!questionsArray.controls.some(control => control.value === selectedQuestionId)) {
 
-            questionsArray.push(new FormControl(questionIdString));
+            questionsArray.push(new FormControl(selectedQuestionId));
             section.get('selectedQuestionId')?.setValue(null); // Reset the selected question after adding
             console.log(`Added question ID: ${selectedQuestionId} to section ${index}`);
             
@@ -311,6 +310,7 @@ removeQuestionFromSection(sectionIndex: number, questionIndex: number): void {
         next: (response) => {
           if(response.success){
             this.toastr.success(response.message);
+            this.router.navigate(['/admin/dashboard']);
           }
 
           else{

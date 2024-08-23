@@ -24,6 +24,7 @@ export class FormResponseListComponent {
 
   formId : any;
 
+
   constructor(private responseService : ResponseService, private toastr : ToastrService) {}
 
   ngOnInit(): void {
@@ -76,11 +77,29 @@ export class FormResponseListComponent {
     this.isDeleteModalVisible = false;
   }
 
-  // deleteForm() {
-  //   // Handle deletion logic with backend integration
-  //   this.formService.deteteFormById(this.selectedResponse.id).subscribe(() => {
-  //     this.responses = this.responses.filter(f => f !== this.selectedResponse);
-  //     this.closeDeleteModal();
-  //   });
-  // }
+
+  
+
+  deleteresponse() {
+    // Handle deletion logic with backend integration
+    this.responseService.removeResponse(this.selectedResponse.id).subscribe({
+      next : (res)=> {
+        if(res.success){
+          this.toastr.success(res.message);
+        }
+        else {
+          this.toastr.error(res.message);
+        }
+      },
+      error : (err) => {
+        if(err.error.message){
+          this.toastr.error(err.error.message);
+        }
+        else {
+          this.toastr.error('Something went wrong');
+        }
+      }
+      
+    });
+  }
 }
