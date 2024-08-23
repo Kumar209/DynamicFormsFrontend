@@ -16,7 +16,7 @@ const routes: Routes = [
   {
     path: '', component: AdminComponent,
     children: [
-      { path: 'dashboard', component: DashboardComponent, canActivate : [authGuard] },
+      { path: 'dashboard', component: DashboardComponent },
       { path: 'create-template', component: CreateSourceTemplateComponent },
       { path: 'add-questions', component: CreateQuestionComponent },
       { path: 'existing-questions', component : ExistingQuestionListComponent },

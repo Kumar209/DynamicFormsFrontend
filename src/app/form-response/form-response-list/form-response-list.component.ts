@@ -1,16 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ResponseService } from '../services/response.service';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { HeaderComponent } from '../../shared/header/header.component';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-form-response-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, SidebarComponent, HeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, SidebarComponent, HeaderComponent,PaginatorModule],
   templateUrl: './form-response-list.component.html',
   styleUrl: './form-response-list.component.css'
 })
@@ -25,9 +26,11 @@ export class FormResponseListComponent {
   formId : any;
 
 
-  constructor(private responseService : ResponseService, private toastr : ToastrService) {}
+  constructor(private responseService : ResponseService, private activatedRoute: ActivatedRoute, private toastr : ToastrService) {}
 
   ngOnInit(): void {
+    this.formId =  this.activatedRoute.snapshot.queryParams['formId'];
+
     this.loadReponses(); 
   }
 
@@ -35,7 +38,9 @@ export class FormResponseListComponent {
   loadReponses(): void {
     this.responseService.getAllResponseByFormId(this.formId).subscribe({
       next : (res) => {
-        this.responses = Array.isArray(res.forms) ? res.forms : [];
+        console.log(res);
+
+        this.responses = Array.isArray(res.responses) ? res.responses : [];
       },
       error : (err) => {
         this.toastr.error('Something went wrong');
@@ -51,9 +56,11 @@ export class FormResponseListComponent {
     }
   
     const filteredResponse = this.responses.filter(response => {
-      const formId = response.formId.toLowerCase().includes(this.searchTerm.toLowerCase());
+      // const formId = response.formId.toLowerCase().includes(this.searchTerm.toLowerCase());
       const email = response.email ? response.email.toLowerCase().includes(this.searchTerm.toLowerCase()) : false;
-      return formId || email;
+      // return formId || email;
+      return  email;
+
     });
   
     const startIndex = this.currentPage * this.itemsPerPage;

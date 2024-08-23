@@ -7,7 +7,34 @@
         </div>
 
         <div class="content">
-            
+            <div class="container mt-5">
+                <h1 class="text-center">Response Details</h1>
+              
+                <div *ngIf="fetchedResponse" class="card my-4">
+                  <div class="card-header" style="background-color: #0c1e35; color: #fff;">
+                    <h4>Form ID: {{ fetchedResponse.formId }}</h4>
+                    <p>Email: {{ fetchedResponse.email }}</p>
+                  </div>
+              
+                  <div class="card-body">
+                    <div *ngFor="let section of parsedResponse; let sectionIndex = index">
+
+                      <div style="background-color: #f77f00; color: #fff; margin: 10px 0; padding: 10px 5px; border-radius: 7px;">
+                        <h5>Section {{ sectionIndex + 1 }}</h5>
+                      </div>
+
+                      <div *ngFor="let question of section; let questionIndex = index">
+                        <label style="padding-left: 10px;">{{questionIndex +1}} : {{ question.question }}</label>
+                        <p style="padding-left: 30px;">{{ question.answer }}</p>
+                      </div>
+                    </div>
+
+                  </div>
+
+
+
+                </div>
+              </div>
         </div>
     </div>
 </section>

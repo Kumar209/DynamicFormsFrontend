@@ -9,8 +9,8 @@
     </div>
     <div class="right-wrapper">
       <select id="responseType" [(ngModel)]="selectedResponseType">
-        <option selected value="" >All</option>
-        <option *ngFor="let type of answerTypes"  [value]="type.typeName">
+        <option selected value="">All</option>
+        <option *ngFor="let type of answerTypes" [value]="type.typeName">
           {{ type.typeName }}
         </option>
       </select>
@@ -44,13 +44,18 @@
           </td>
         </tr>
       </table>
+ 
+      <div class="card flex justify-content-center">
+        <p-paginator 
+            (onPageChange)="onPageChange($event)" 
+            [first]="first" 
+            [rows]="rows" 
+            [totalRecords]="totalRecords" 
+            [rowsPerPageOptions]="[5,10, 20, 30]" />
+      </div>
     </div>
   </div>
 </div>
-
-
-
-
 
 <div id="questionDelete" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="dialog">
@@ -66,13 +71,8 @@
           </p>
         </div>
         <div class="modal-footer">
-          <input
-            type="button"
-            class="btn btn-default"
-            data-bs-dismiss="modal"
-            value="Cancel"
-          />
-          <button class="btn btn-danger" (click)="deleteQuestion()"  data-bs-dismiss="modal" >Delete question</button>
+          <input type="button" class="btn btn-default" data-bs-dismiss="modal" value="Cancel" />
+          <button class="btn btn-danger" (click)="deleteQuestion()" data-bs-dismiss="modal">Delete question</button>
         </div>
       </form>
     </div>
