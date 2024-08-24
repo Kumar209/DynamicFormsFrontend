@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<!-- <div class="container mt-5">
   <h1 class="text-center">{{ formData?.name }}</h1>
   <p class="text-center text-muted">{{ formData?.description }}</p>
 
@@ -51,105 +51,72 @@
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
+  -->
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
- <div class="container mt-5">
+  <div class="container mt-5">
     <h1 class="text-center">{{ formData?.name }}</h1>
     <p class="text-center text-muted">{{ formData?.description }}</p>
   
-  <form *ngIf="formData" (submit)="onSubmit($event)">
-
-      <div *ngFor="let section of formData.sections" class="card my-4">
+    <form *ngIf="formData" (submit)="onSubmit($event)">
+  
+      <div *ngFor="let section of formData.sections; let sectionIndex = index" class="card my-4">
         <div class="card-header">
           <h4>{{ section.sectionName }}</h4>
           <p class="text-muted">{{ section.description }}</p>
         </div>
-
+  
         <div class="card-body">
-          <div *ngFor="let question of section.questions" class="form-group mb-3">
-
+          <div *ngFor="let question of section.questions; let questionIndex = index; let lastQuestion = last" class="form-group mb-3">
+  
             <label>{{ question.question }}</label>
-
+  
             <div [ngSwitch]="getAnswerTypeName(question.answerTypeId)">
-              <input *ngSwitchCase="'text'" type="text" class="form-control" placeholder="Enter your answer">
-
-              <input *ngSwitchCase="'number'" type="number" class="form-control" placeholder="Enter your answer">
-
-              <input *ngSwitchCase="'date'" type="date" class="form-control">
-
+              <input *ngSwitchCase="'text'" type="text" class="form-control" placeholder="Enter your answer" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
+              <input *ngSwitchCase="'number'" type="number" class="form-control" placeholder="Enter your answer" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
+              <input *ngSwitchCase="'date'" type="date" class="form-control" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
+  
               <div *ngSwitchCase="'radio'">
                 <div *ngFor="let option of question.answerOptions">
-                  <input type="radio" [name]="'option_' + question.id" [value]="option.optionValue" (change)="handleOptionSelect($event, option, section)">
+                  <input type="radio" [name]="'option_' + question.id" [value]="option.optionValue" (change)="handleOptionSelect($event, option, section, question, questionIndex)">
                   {{ option.optionValue }}
                 </div>
               </div>
-
-              <select *ngSwitchCase="'dropdown'" class="form-control">
-                <option *ngFor="let option of question.answerOptions" (change)="handleOptionSelect($event, option, section)">{{ option.optionValue }}</option>
+  
+              <select *ngSwitchCase="'dropdown'" class="form-control" (change)="handleOptionSelect($event, null, section, question, questionIndex)">
+                <option *ngFor="let option of question.answerOptions">{{ option.optionValue }}</option>
               </select>
-
+  
               <div *ngSwitchCase="'checkbox'">
                 <div *ngFor="let option of question.answerOptions">
-                  <input type="checkbox" [value]="option.optionValue" (change)="handleOptionSelect($event, option, section)">
+                  <input type="checkbox" [value]="option.optionValue" (change)="handleOptionSelect($event, option, section, question, questionIndex)">
                   {{ option.optionValue }}
                 </div>
               </div>
 
-              <div *ngSwitchCase="'multi-select'">
-                <select class="form-control" multiple>
-                  <option *ngFor="let option of question.answerOptions">{{ option.optionValue }}</option>
+              <!-- <div *ngSwitchCase="'multi-select'">
+                <select  multiple (change)="handleOptionSelect($event, null, section, question, questionIndex)">
+                  <option *ngFor="let option of question.answerOptions" [value]="option.optionValue">{{ option.optionValue }}</option>
                 </select>
-              </div> 
-            </div>
+              </div> -->
 
+              <div *ngSwitchCase="'multi-select'">
+                <div *ngFor="let option of question.answerOptions">
+                  <input type="checkbox" [value]="option.optionValue" (change)="handleOptionSelect($event, option, section, question, questionIndex)">
+                  <label>{{ option.optionValue }}</label>
+                </div>
+              </div>
+
+             
+
+
+
+            </div>
+  
           </div>
         </div>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
-  
- -->

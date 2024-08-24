@@ -4,37 +4,41 @@ import { ResponseService } from '../services/response.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuestionService } from '../../admin/service/question.service';
 
 @Component({
   selector: 'app-generated-form',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule],
   templateUrl: './generated-form.component.html',
-  styleUrl: './generated-form.component.css'
+  styleUrls: ['./generated-form.component.css']
 })
 export class GeneratedFormComponent implements OnInit {
-  formData : any;
+  formData: any;
   answerTypes: any[] = [];
-  formId : any;
+  formId: any;
+
 
   selectedAnswers: { [sectionId: string]: { [questionId: string]: any } } = {};
 
   userEmail: string | null = null;
 
-
-  constructor(private formService : FormService, private questionService : QuestionService,  private responseService : ResponseService, private router : Router, private activatedRoute : ActivatedRoute, private toastr : ToastrService) {}
+  constructor(
+    private formService: FormService,
+    private questionService: QuestionService,
+    private responseService: ResponseService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
-    this.formId =  this.activatedRoute.snapshot.queryParams['formId'];
-
+    this.formId = this.activatedRoute.snapshot.queryParams['formId'];
 
     this.loadFormData();
     this.loadAnswerTypes();
   }
-
-
 
   loadAnswerTypes() {
     this.questionService.getAnswerTypes().subscribe((res: any) => {
@@ -42,42 +46,39 @@ export class GeneratedFormComponent implements OnInit {
     });
   }
 
-
   loadFormData() {
     this.formService.getFormById(this.formId).subscribe({
-      
-      next : (res)=> {
+      next: (res) => {
         this.formData = res.form;
       },
-      error : (err) => {
+      error: (err) => {
         this.toastr.error('Something went wrong in fetching form data');
       }
-    })
+    });
   }
 
-
-
   getAnswerTypeName(answerTypeId: number): string {
-    const answerType = this.answerTypes.find(type => type.id === answerTypeId);
+    const answerType = this.answerTypes.find((type) => type.id === answerTypeId);
     return answerType ? answerType.typeName : '';
   }
 
-
-
-
-
   loadNextQuestion(nextQuestionId: number, section: any) {
-    this.questionService.getQuestionById(nextQuestionId).subscribe(response => {
-
+    this.questionService.getQuestionById(nextQuestionId).subscribe((response) => {
       if (response.success && this.formData) {
         section.questions.push(response.question);
       }
-      
     });
   }
 
 
-  handleOptionSelect(event: any, option: any, section: any, question: any) {
+
+
+
+
+  selectedMultiSelectOptions: any[] = [];
+
+
+  handleOptionSelect(event: any, option: any, section: any, question: any, questionIndex: number) {
     const questionId = question.id;
     let answerValue;
 
@@ -100,6 +101,7 @@ export class GeneratedFormComponent implements OnInit {
         } 
         else {
           const index = this.selectedAnswers[section.id][questionId].indexOf(checkboxValue);
+          
           if (index !== -1) {
             this.selectedAnswers[section.id][questionId].splice(index, 1);
           }
@@ -126,6 +128,25 @@ export class GeneratedFormComponent implements OnInit {
         answerValue = event.target.valueAsDate;
         break;
 
+      // case 'multi-select':
+      //   if (!this.selectedAnswers[section.id]) {
+      //     this.selectedAnswers[section.id] = {};
+      //   }
+      //   if (!this.selectedAnswers[section.id][questionId]) {
+      //     this.selectedAnswers[section.id][questionId] = [];
+      //   }
+      //   const multiSelectValue = event.target.value;
+      //   if (event.target.selected) {
+      //     this.selectedAnswers[section.id][questionId].push(multiSelectValue);
+      //   } else {
+      //     const index = this.selectedAnswers[section.id][questionId].indexOf(multiSelectValue);
+      //     if (index !== -1) {
+      //       this.selectedAnswers[section.id][questionId].splice(index, 1);
+      //     }
+      //   }
+      //   answerValue = this.selectedAnswers[section.id][questionId];
+      //   break;
+
       case 'multi-select':
         if (!this.selectedAnswers[section.id]) {
           this.selectedAnswers[section.id] = {};
@@ -133,17 +154,17 @@ export class GeneratedFormComponent implements OnInit {
         if (!this.selectedAnswers[section.id][questionId]) {
           this.selectedAnswers[section.id][questionId] = [];
         }
-        const multiSelectValue = event.target.value;
-        if (event.target.selected) {
-          this.selectedAnswers[section.id][questionId].push(multiSelectValue);
+        const checkbox = event.target;
+        if (checkbox.checked) {
+          this.selectedAnswers[section.id][questionId].push(option.optionValue);
         } else {
-          const index = this.selectedAnswers[section.id][questionId].indexOf(multiSelectValue);
+          const index = this.selectedAnswers[section.id][questionId].indexOf(option.optionValue);
           if (index !== -1) {
             this.selectedAnswers[section.id][questionId].splice(index, 1);
           }
         }
-        answerValue = this.selectedAnswers[section.id][questionId];
         break;
+
 
       default:
         answerValue = null;
@@ -156,73 +177,133 @@ export class GeneratedFormComponent implements OnInit {
       if (!this.selectedAnswers[originalSectionId]) {
         this.selectedAnswers[originalSectionId] = {};
       }
+
       this.selectedAnswers[originalSectionId][questionId] = answerValue;
     }
 
+    // Handle next question logic --- Changed
     if (option && option.nextQuestionId) {
-      this.loadNextQuestion(option.nextQuestionId, section);
+      if (event.target.type === 'radio' && event.target.checked) {
+        // this.replaceNextQuestion(section, questionIndex, option.nextQuestionId);
+        if (option.nextQuestionId) {
+          this.replaceNextQuestion(section, questionIndex, option.nextQuestionId);
+        } 
+        else {
+          // Hide next question if radio option does not have a next question
+          this.removeNextQuestion(section, questionIndex);
+        }
+      } 
+      
+      else if (event.target.type === 'checkbox' && event.target.checked) {
+        // this.addNextQuestion(section, questionIndex, option.nextQuestionId);
+        if (option.nextQuestionId) {
+          this.addNextQuestion(section, questionIndex, option.nextQuestionId);
+        }
+      } 
+      else if (event.target.type === 'checkbox' && !event.target.checked) {
+        this.removeNextQuestion(section, questionIndex);
+      }
+    }
+
+    
+  }
+
+
+
+
+
+  // Method to replace next question
+  replaceNextQuestion(section: any, questionIndex: number, nextQuestionId: number) {
+    this.questionService.getQuestionById(nextQuestionId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Replace next question
+          section.questions[questionIndex + 1] = response.question;
+        } else {
+          console.error('Failed to load next question:', response);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading next question:', error);
+      }
+    });
+  }
+
+  // Method to add next question
+  addNextQuestion(section: any, questionIndex: number, nextQuestionId: number) {
+    this.questionService.getQuestionById(nextQuestionId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Add next question
+          section.questions.splice(questionIndex + 1, 0, response.question);
+        } else {
+          console.error('Failed to load next question:', response);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading next question:', error);
+      }
+    });
+  }
+
+  // Method to remove next question
+  removeNextQuestion(section: any, questionIndex: number) {
+    if (section.questions.length > questionIndex + 1) {
+      section.questions.splice(questionIndex + 1, 1);
     }
   }
 
-  
 
 
 
-  onSubmit(event : any){
+  onSubmit(event: any) {
     event.preventDefault();
 
+    // Loop through sections and questions
+    for (const sectionId in this.selectedAnswers) {
+      if (this.selectedAnswers.hasOwnProperty(sectionId)) {
+        const sectionAnswers = this.selectedAnswers[sectionId];
+        console.log(`Section ID: ${sectionId}`);
+        for (const questionId in sectionAnswers) {
+          if (sectionAnswers.hasOwnProperty(questionId)) {
+            const answerValue = sectionAnswers[questionId];
+            console.log(`Question ID: ${questionId}, Answer: ${answerValue}`);
+          }
+        }
+      }
+    }
 
-      // Loop through sections and questions
-      // for (const sectionId in this.selectedAnswers) {
-      //   if (this.selectedAnswers.hasOwnProperty(sectionId)) {
-      //     const sectionAnswers = this.selectedAnswers[sectionId];
-      //     console.log(`Section ID: ${sectionId}`);
-      //     for (const questionId in sectionAnswers) {
-      //       if (sectionAnswers.hasOwnProperty(questionId)) {
-      //         const answerValue = sectionAnswers[questionId];
-      //         console.log(`Question ID: ${questionId}, Answer: ${answerValue}`);
-      //       }
-      //     }
-      //   }
-      // }
-
-      const outerEmail = this.userEmail || 'anonymous';
-
-
+    const outerEmail = this.userEmail || 'anonymous';
 
     // Convert selectedAnswers to a JSON string
     const answersJson = JSON.stringify(this.selectedAnswers);
 
-
-
     const responseData = {
-      formId : this.formId,
-      response : answersJson,
-      email : outerEmail,
-      AnswerMasterId : null
-    }
+      formId: this.formId,
+      response: answersJson,
+      email: outerEmail,
+      AnswerMasterId: null
+    };
 
+    console.log(responseData);
 
-    this.responseService.insertFormResponse(responseData, this.formId).subscribe({
-      next : (res) => {
-        if(res.success){
-          this.toastr.success(res.message);
-          this.router.navigate(['/form-response/form-response-list']);
-        }
-        else{
-          this.toastr.error(res.message);
-        }
-      },
-      error : (err) => {
-        if(err.error.message){
-          this.toastr.error(err.error.message);
-        }
-        else{
-          this.toastr.error('Something went wrong');
-        }
-      }
-    })
-
+    // this.responseService.insertFormResponse(responseData, this.formId).subscribe({
+    //   next: (res) => {
+    //     if (res.success) {
+    //       this.toastr.success(res.message);
+    //       this.router.navigate(['/form-response/form-response-list']);
+    //     } else {
+    //       this.toastr.error(res.message);
+    //     }
+    //   },
+    //   error: (err) => {
+    //     if (err.error.message) {
+    //       this.toastr.error(err.error.message);
+    //     } else {
+    //       this.toastr.error('Something went wrong');
+    //     }
+    //   }
+    // });
   }
 }
 
