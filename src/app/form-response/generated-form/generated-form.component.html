@@ -95,18 +95,50 @@
                 </div>
               </div>
 
-              <!-- <div *ngSwitchCase="'multi-select'">
-                <select  multiple (change)="handleOptionSelect($event, null, section, question, questionIndex)">
-                  <option *ngFor="let option of question.answerOptions" [value]="option.optionValue">{{ option.optionValue }}</option>
-                </select>
-              </div> -->
-
               <div *ngSwitchCase="'multi-select'">
+                <!-- <select  multiple (change)="handleOptionSelect($event, null, section, question, questionIndex)">
+                  <option *ngFor="let option of question.answerOptions" [value]="option.optionValue">{{ option.optionValue }}</option>
+                </select> -->
+
+
+                  <div class="dropdown">
+                    <button
+                          class="btn btn-secondary dropdown-toggle"
+                          type="button"
+                          id="multiSelectDropdown"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                    >
+                          Select Options
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="multiSelectDropdown">
+                      <li *ngFor="let option of question.answerOptions" class="dropdown-item">
+                      <div class="form-check">
+                        <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    [value]="option.optionValue"
+                                    (change)="handleOptionSelect($event, option, section, question, questionIndex)"
+                                    id="{{ 'option_' + question.id + '_' + option.optionValue }}"
+                                  />
+                      <label class="form-check-label" [for]="'option_' + question.id + '_' + option.optionValue">
+                                  {{ option.optionValue }}
+                      </label>
+                      </div>
+                      </li>
+                    </ul>
+                  </div>
+
+
+
+              </div>
+
+              <!-- <div *ngSwitchCase="'multi-select'">
                 <div *ngFor="let option of question.answerOptions">
                   <input type="checkbox" [value]="option.optionValue" (change)="handleOptionSelect($event, option, section, question, questionIndex)">
                   <label>{{ option.optionValue }}</label>
                 </div>
-              </div>
+              </div> -->
 
              
 

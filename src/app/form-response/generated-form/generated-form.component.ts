@@ -6,11 +6,12 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuestionService } from '../../admin/service/question.service';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-generated-form',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule, NgSelectComponent],
   templateUrl: './generated-form.component.html',
   styleUrls: ['./generated-form.component.css']
 })
@@ -127,25 +128,6 @@ export class GeneratedFormComponent implements OnInit {
       case 'date':
         answerValue = event.target.valueAsDate;
         break;
-
-      // case 'multi-select':
-      //   if (!this.selectedAnswers[section.id]) {
-      //     this.selectedAnswers[section.id] = {};
-      //   }
-      //   if (!this.selectedAnswers[section.id][questionId]) {
-      //     this.selectedAnswers[section.id][questionId] = [];
-      //   }
-      //   const multiSelectValue = event.target.value;
-      //   if (event.target.selected) {
-      //     this.selectedAnswers[section.id][questionId].push(multiSelectValue);
-      //   } else {
-      //     const index = this.selectedAnswers[section.id][questionId].indexOf(multiSelectValue);
-      //     if (index !== -1) {
-      //       this.selectedAnswers[section.id][questionId].splice(index, 1);
-      //     }
-      //   }
-      //   answerValue = this.selectedAnswers[section.id][questionId];
-      //   break;
 
       case 'multi-select':
         if (!this.selectedAnswers[section.id]) {
@@ -287,23 +269,25 @@ export class GeneratedFormComponent implements OnInit {
 
     console.log(responseData);
 
-    // this.responseService.insertFormResponse(responseData, this.formId).subscribe({
-    //   next: (res) => {
-    //     if (res.success) {
-    //       this.toastr.success(res.message);
-    //       this.router.navigate(['/form-response/form-response-list']);
-    //     } else {
-    //       this.toastr.error(res.message);
-    //     }
-    //   },
-    //   error: (err) => {
-    //     if (err.error.message) {
-    //       this.toastr.error(err.error.message);
-    //     } else {
-    //       this.toastr.error('Something went wrong');
-    //     }
-    //   }
-    // });
+    this.responseService.insertFormResponse(responseData, this.formId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.toastr.success(res.message);
+          // this.router.navigate(['/form-response/form-response-list']);
+
+          this.router.navigate(['/form-response/form-response-list'], { queryParams: { formId: this.formId } });
+        } else {
+          this.toastr.error(res.message);
+        }
+      },
+      error: (err) => {
+        if (err.error.message) {
+          this.toastr.error(err.error.message);
+        } else {
+          this.toastr.error('Something went wrong');
+        }
+      }
+    });
   }
 }
 

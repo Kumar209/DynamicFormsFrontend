@@ -55,17 +55,22 @@ export class FormResponseListComponent {
       return [];
     }
   
+    console.log(this.responses);
+    
     const filteredResponse = this.responses.filter(response => {
-      // const formId = response.formId.toLowerCase().includes(this.searchTerm.toLowerCase());
       const email = response.email ? response.email.toLowerCase().includes(this.searchTerm.toLowerCase()) : false;
-      // return formId || email;
       return  email;
-
     });
+
+  
   
     const startIndex = this.currentPage * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    return filteredResponse.slice(startIndex, endIndex);
+    var arr = filteredResponse.slice(startIndex, endIndex);
+
+    console.log(arr);
+
+    return arr;
   }
   
   
