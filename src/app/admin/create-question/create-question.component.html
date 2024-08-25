@@ -64,12 +64,12 @@
                       <div class="d-flex">
                         <div class="d-flex" style="align-items: center;">
                           <div>
-                            <label for="option">Option {{i+1}}</label>
+                            <label for="option" class="mt-2">Option {{i+1}}</label>
                             <input style="width: 150px; height: 50px;" type="text" formControlName="optionValue"
                               placeholder="Enter option text" required />
                           </div>
 
-                          <div class="wrapperopt" style="margin-left: 15px;">
+                          <div class="wrapperopt mt-2" style="margin-left: 15px;">
                             <label for="nextQuestion{{ i }}">Next Question to show</label>
                             <select id="nextQuestion{{ i }}" formControlName="nextQuestionID">
                               <option selected value="">Select next question</option>
@@ -81,12 +81,12 @@
 
                         </div>
 
-                        <button style=" width: 110px; height: 40px; background-color: #f77f00;margin-left: 10px;" type="button" (click)="removeOption(i)">
+                        <button style=" width: 140px; height: 40px; margin-top: 37px; padding: 0px 25px; font-size: 16px; background-color: #f77f00; margin-left: 10px;" type="button" (click)="removeOption(i)">
                           Remove
                         </button>
                       </div>
                     </div>
-                    <button style="width: 100px; background-color: red; margin-left: 10px;" type="button" (click)="addOption()">
+                    <button style="width: 150px; margin-top: 15px; background-color: red; " type="button" (click)="addOption()">
                       Add Option
                     </button>
                   </div>
@@ -122,8 +122,8 @@
                   <label for="constraintDatatype">Data type</label>
                   <select id="constraintDatatype" formControlName="dataType">
                     <option selected value="" disabled>Select data type</option>
-                    <option value="int">string</option>
-                    <option value="varchar">number</option>
+                    <option value="string">string</option>
+                    <option value="number">number</option>
                     <option value="date">date</option>
                   </select>
                 </div>

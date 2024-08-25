@@ -1,13 +1,24 @@
 .container {
     max-width: 800px;
+    padding: 20px 15px;
+    border-radius: 10px; 
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; 
+    margin-bottom: 30px;
   }
   
   .card {
     border: 1px solid #ddd;
   }
+
+  .card-body {
+    border: 1px solid #3795BD;
+    border-radius: 0 0 5px 5px;
+  }
   
   .card-header {
-    background-color: #f7f7f7;
+    background-color: #3795BD;
+    color: #fff;
+
   }
   
   .form-group label {
@@ -17,6 +28,7 @@
   .btn-primary {
     background-color: #007bff;
     border-color: #007bff;
+    padding: 10px 20px;
   }
   
   .btn-primary:hover {

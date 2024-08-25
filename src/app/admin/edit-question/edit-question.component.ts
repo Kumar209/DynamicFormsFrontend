@@ -227,6 +227,7 @@ export class EditQuestionComponent {
         next : (res) => {
           if(res.success){
             this.toastr.success(res.message);
+            this.router.navigate(['/admin/existing-questions']);
           }
           else{
             this.toastr.error(res.message);

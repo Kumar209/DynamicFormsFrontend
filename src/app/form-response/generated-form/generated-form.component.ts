@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuestionService } from '../../admin/service/question.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { isValidDate } from 'rxjs/internal/util/isDate';
 
 @Component({
   selector: 'app-generated-form',
@@ -237,23 +238,35 @@ export class GeneratedFormComponent implements OnInit {
 
 
 
+  formIsValid!: boolean;
+  formSubmitted = false;
 
   onSubmit(event: any) {
     event.preventDefault();
 
-    // Loop through sections and questions
-    for (const sectionId in this.selectedAnswers) {
-      if (this.selectedAnswers.hasOwnProperty(sectionId)) {
-        const sectionAnswers = this.selectedAnswers[sectionId];
-        console.log(`Section ID: ${sectionId}`);
-        for (const questionId in sectionAnswers) {
-          if (sectionAnswers.hasOwnProperty(questionId)) {
-            const answerValue = sectionAnswers[questionId];
-            console.log(`Question ID: ${questionId}, Answer: ${answerValue}`);
-          }
-        }
-      }
+    this.formIsValid = this.checkFormValidity();
+
+    if (!this.formIsValid) {
+      this.formSubmitted = true;
+      return;
     }
+
+    this.formSubmitted = false;
+
+
+    // Loop through sections and questions
+    // for (const sectionId in this.selectedAnswers) {
+    //   if (this.selectedAnswers.hasOwnProperty(sectionId)) {
+    //     const sectionAnswers = this.selectedAnswers[sectionId];
+    //     console.log(`Section ID: ${sectionId}`);
+    //     for (const questionId in sectionAnswers) {
+    //       if (sectionAnswers.hasOwnProperty(questionId)) {
+    //         const answerValue = sectionAnswers[questionId];
+    //         console.log(`Question ID: ${questionId}, Answer: ${answerValue}`);
+    //       }
+    //     }
+    //   }
+    // }
 
     const outerEmail = this.userEmail || 'anonymous';
 
@@ -267,13 +280,11 @@ export class GeneratedFormComponent implements OnInit {
       AnswerMasterId: null
     };
 
-    console.log(responseData);
 
     this.responseService.insertFormResponse(responseData, this.formId).subscribe({
       next: (res) => {
         if (res.success) {
           this.toastr.success(res.message);
-          // this.router.navigate(['/form-response/form-response-list']);
 
           this.router.navigate(['/form-response/form-response-list'], { queryParams: { formId: this.formId } });
         } else {
@@ -289,6 +300,90 @@ export class GeneratedFormComponent implements OnInit {
       }
     });
   }
+
+
+  
+
+
+  checkFormValidity(): boolean {
+    for (const section of this.formData.sections) {
+      for (const question of section.questions) {
+        if (question.required) {
+          const sectionAnswers = this.selectedAnswers[section.id];
+          const answer = sectionAnswers && sectionAnswers[question.id];
+  
+          // console.log(`Section ID: ${section.id}, Question ID: ${question.id}, Answer: ${answer}`);
+  
+          if (!sectionAnswers || !answer) {
+            // console.log('No answer found for required question');
+            this.toastr.warning('No answer found for required question');
+            return false;
+          }
+  
+          switch (this.getAnswerTypeName(question.answerTypeId)) {
+            case 'text':
+              if (!answer || answer.trim() === '') {
+                // console.log('Text answer is empty');
+                this.toastr.warning('Text answer is empty');
+                return false;
+              }
+              break;
+
+            case 'number':
+              if (!answer || isNaN(answer)) {
+                // console.log('Number answer is invalid');
+                this.toastr.warning('Number answer is invalid');
+                return false;
+              }
+              break;
+
+            case 'date':
+              if (!answer || !(answer instanceof Date) && !/^\d{4}-\d{2}-\d{2}$/.test(answer)) {
+                // console.log('Date answer is invalid');
+                this.toastr.warning('Date answer is invalid');
+                return false;
+              }
+              break;
+
+            case 'radio':
+              if (!answer) {
+                // console.log('Radio answer is empty');
+                this.toastr.warning('Radio answer is empty');
+                return false;
+              }
+              break;
+
+            case 'dropdown':
+              if (!answer) {
+                // console.log('Dropdown answer is empty');
+                this.toastr.warning('Dropdown answer is empty');
+                return false;
+              }
+              break;        
+
+            case 'checkbox':
+            case 'multi-select':
+              if (!Array.isArray(answer) || answer.length === 0) {
+                // console.log('Checkbox or multi-select answer is empty');
+                this.toastr.warning('Checkbox or multi-select answer is empty');
+                return false;
+              }
+              break;
+
+            default:
+              // console.error(`Unknown answer type ID: ${question.answerTypeId}`);
+              this.toastr.error(`Unknown answer type ID: ${question.answerTypeId}`);
+              return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
 }
+
+
+
+
 
 

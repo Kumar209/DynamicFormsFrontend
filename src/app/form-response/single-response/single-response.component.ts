@@ -120,12 +120,8 @@ export class SingleResponseComponent implements OnInit {
 
   getQuestionText(sectionId: string, questionId: string): string {
     // return `Question ${sectionId}-${questionId}`;
-    console.log(questionId);
     const convertedQuestionId = parseInt(questionId);
-    console.log(convertedQuestionId);
-    console.log(this.questions);
     const question = this.questions.find(q => q.id === convertedQuestionId);
-    console.log(this.questions);
 
     return question ? question.question : `Unknown Question ${questionId}`;
   }

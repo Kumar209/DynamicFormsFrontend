@@ -1,78 +1,25 @@
-<!-- <div class="container mt-5">
-  <h1 class="text-center">{{ formData?.name }}</h1>
-  <p class="text-center text-muted">{{ formData?.description }}</p>
-
-  <form *ngIf="formData" (submit)="onSubmit($event)">
-
-    <div *ngFor="let section of formData.sections" class="card my-4">
-      <div class="card-header">
-        <h4>{{ section.sectionName }}</h4>
-        <p class="text-muted">{{ section.description }}</p>
-      </div>
-
-      <div class="card-body">
-        <div *ngFor="let question of section.questions; let i = index" class="form-group mb-3">
-
-          <label>{{ question.question }}</label>
-
-          <div [ngSwitch]="getAnswerTypeName(question.answerTypeId)">
-            <input *ngSwitchCase="'text'" type="text" class="form-control" placeholder="Enter your answer" (input)="handleOptionSelect($event, null, section, question)">
-            <input *ngSwitchCase="'number'" type="number" class="form-control" placeholder="Enter your answer" (input)="handleOptionSelect($event, null, section, question)">
-            <input *ngSwitchCase="'date'" type="date" class="form-control" (input)="handleOptionSelect($event, null, section, question)">
-
-            <div *ngSwitchCase="'radio'">
-              <div *ngFor="let option of question.answerOptions">
-                <input type="radio" [name]="'option_' + question.id" [value]="option.optionValue" (change)="handleOptionSelect($event, option, section, question)">
-                {{ option.optionValue }}
-              </div>
-            </div>
-
-            <select *ngSwitchCase="'dropdown'" class="form-control" (change)="handleOptionSelect($event, null, section, question)">
-              <option *ngFor="let option of question.answerOptions">{{ option.optionValue }}</option>
-            </select>
-
-            <div *ngSwitchCase="'checkbox'">
-              <div *ngFor="let option of question.answerOptions">
-                <input type="checkbox" [value]="option.optionValue" (change)="handleOptionSelect($event, option, section, question)">
-                {{ option.optionValue }}
-              </div>
-            </div>
-
-            <div *ngSwitchCase="'multi-select'">
-              <select class="form-control" multiple>
-                <option *ngFor="let option of question.answerOptions">{{ option.optionValue }}</option>
-              </select>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-</div>
-  -->
-
-
-
-  <div class="container mt-5">
+  <div style="width: 100%; background-color: rgb(68, 6, 114); color: #fff; padding: 30px 0 50px;   border-radius: 0 0 15px 15px;">
     <h1 class="text-center">{{ formData?.name }}</h1>
-    <p class="text-center text-muted">{{ formData?.description }}</p>
+    <p class="text-center">{{ formData?.description }}</p>
+  </div>
+  
+  
+  <div class="container mt-5">
   
     <form *ngIf="formData" (submit)="onSubmit($event)">
   
       <div *ngFor="let section of formData.sections; let sectionIndex = index" class="card my-4">
         <div class="card-header">
           <h4>{{ section.sectionName }}</h4>
-          <p class="text-muted">{{ section.description }}</p>
+          <p>{{ section.description }}</p>
         </div>
   
-        <div class="card-body">
-          <div *ngFor="let question of section.questions; let questionIndex = index; let lastQuestion = last" class="form-group mb-3">
+        <div class="card-body" >
+          <div *ngFor="let question of section.questions; let questionIndex = index; let lastQuestion = last" class="form-group">
   
-            <label>{{ question.question }}</label>
+            <label class="mb-1" >{{ question.question }} <span *ngIf="question.required" style="color: red; font-size: 14px;">*</span></label>
   
-            <div [ngSwitch]="getAnswerTypeName(question.answerTypeId)">
+            <div [ngSwitch]="getAnswerTypeName(question.answerTypeId)" class="mb-4">
               <input *ngSwitchCase="'text'" type="text" class="form-control" placeholder="Enter your answer" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
               <input *ngSwitchCase="'number'" type="number" class="form-control" placeholder="Enter your answer" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
               <input *ngSwitchCase="'date'" type="date" class="form-control" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
@@ -96,11 +43,6 @@
               </div>
 
               <div *ngSwitchCase="'multi-select'">
-                <!-- <select  multiple (change)="handleOptionSelect($event, null, section, question, questionIndex)">
-                  <option *ngFor="let option of question.answerOptions" [value]="option.optionValue">{{ option.optionValue }}</option>
-                </select> -->
-
-
                   <div class="dropdown">
                     <button
                           class="btn btn-secondary dropdown-toggle"
@@ -128,27 +70,25 @@
                       </li>
                     </ul>
                   </div>
-
-
-
               </div>
 
-              <!-- <div *ngSwitchCase="'multi-select'">
-                <div *ngFor="let option of question.answerOptions">
-                  <input type="checkbox" [value]="option.optionValue" (change)="handleOptionSelect($event, option, section, question, questionIndex)">
-                  <label>{{ option.optionValue }}</label>
-                </div>
-              </div> -->
-
-             
-
-
-
+              <div *ngIf="formSubmitted && question.required && (!selectedAnswers[section.id] || !selectedAnswers[section.id][question.id])" 
+                  style="color: red; font-weight: bold; font-size: 14px; margin-top: 5px; margin-left: 4px;"
+              >
+                * Field is required
+              </div>
             </div>
-  
+
+            
           </div>
+
+
+
         </div>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
+
+
+
