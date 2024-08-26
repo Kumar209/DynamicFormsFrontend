@@ -8,6 +8,7 @@ import { ExistingQuestionListComponent } from './existing-question-list/existing
 import { authGuard } from '../guards/auth.guard';
 import { EditSourceTemplateComponent } from './edit-source-template/edit-source-template.component';
 import { EditQuestionComponent } from './edit-question/edit-question.component';
+import { NotFoundComponent } from '../shared/not-found/not-found.component';
 
 const routes: Routes = [
   // {
@@ -23,6 +24,9 @@ const routes: Routes = [
       { path : 'edit-template', component : EditSourceTemplateComponent },
       { path : 'edit-question', component : EditQuestionComponent}
     ]
+  },
+  {
+      path : '**' , component : NotFoundComponent
   }
 ];
 
