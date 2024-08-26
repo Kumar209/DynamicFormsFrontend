@@ -4,6 +4,7 @@ import { QuestionService } from '../service/question.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-edit-question',
@@ -23,7 +24,7 @@ export class EditQuestionComponent {
 
   showOptions : boolean = false;
 
-  constructor(private questionService: QuestionService, private route: ActivatedRoute, private router : Router, private toastr : ToastrService){}
+  constructor(private location : Location, private questionService: QuestionService, private route: ActivatedRoute, private router : Router, private toastr : ToastrService){}
 
 
   ngOnInit(): void {
@@ -227,7 +228,8 @@ export class EditQuestionComponent {
         next : (res) => {
           if(res.success){
             this.toastr.success(res.message);
-            this.router.navigate(['/admin/existing-questions']);
+            // this.router.navigate(['/admin/existing-questions']);
+            this.location.back();
           }
           else{
             this.toastr.error(res.message);
