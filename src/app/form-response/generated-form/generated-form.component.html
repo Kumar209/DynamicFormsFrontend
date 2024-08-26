@@ -31,7 +31,8 @@
                 </div>
               </div>
   
-              <select *ngSwitchCase="'dropdown'" class="form-control" (change)="handleOptionSelect($event, null, section, question, questionIndex)">
+              <select *ngSwitchCase="'dropdown'" class="form-control cursor" (change)="handleOptionSelect($event, null, section, question, questionIndex)">
+                <option selected disabled value="">Select your option</option>
                 <option *ngFor="let option of question.answerOptions">{{ option.optionValue }}</option>
               </select>
   
