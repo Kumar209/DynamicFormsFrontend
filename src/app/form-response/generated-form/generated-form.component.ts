@@ -48,16 +48,27 @@ export class GeneratedFormComponent implements OnInit {
     });
   }
 
+
+
   loadFormData() {
     this.formService.getFormById(this.formId).subscribe({
       next: (res) => {
         this.formData = res.form;
+
+        //To sort the sections
+        this.formData.sections.sort((a: { slno: number }, b: { slno: number }) => a.slno - b.slno);
+
+        //To sort the questions in each sections
+        this.formData.sections.forEach((section : any) => {
+          section.questions.sort((a : any, b : any) => a.slno - b.slno); 
+        });
       },
       error: (err) => {
         this.toastr.error('Something went wrong in fetching form data');
       }
     });
   }
+  
 
   getAnswerTypeName(answerTypeId: number): string {
     const answerType = this.answerTypes.find((type) => type.id === answerTypeId);
