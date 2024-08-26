@@ -111,5 +111,10 @@ export class DashboardComponent implements OnInit {
       console.error('Failed to copy: ', err);
     });
   }
+
+
+  getPublishType(value : boolean){
+    return value === true ? 'Published' : 'Draft';
+  }
   
 }
