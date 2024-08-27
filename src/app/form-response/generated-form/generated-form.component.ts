@@ -297,6 +297,8 @@ export class GeneratedFormComponent implements OnInit {
         if (res.success) {
           this.toastr.success(res.message);
 
+        
+
           this.router.navigate(['/form-response/form-response-list'], { queryParams: { formId: this.formId } });
         } else {
           this.toastr.error(res.message);
@@ -390,6 +392,12 @@ export class GeneratedFormComponent implements OnInit {
       }
     }
     return true;
+  }
+
+
+
+  closeWidow() {
+    window.close();
   }
 }
 

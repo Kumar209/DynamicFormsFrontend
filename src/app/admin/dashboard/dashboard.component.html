@@ -31,7 +31,7 @@
           <tr *ngFor="let form of paginatedForms">
             <td><a class="text-heading font-semibold">{{ form.formName }}</a></td>
             <td>{{ form.description }}</td>
-            <td ><span style="padding: 7px 10px; border-radius: 5px; color: #fff;" [ngStyle]="{'background-color': form.isPublish ? '#7700ff' : '#524c5a'}" >{{ getPublishType(form.isPublish) }}</span></td>
+            <td ><div style="text-align: center; width: 90px; padding: 7px 10px; border-radius: 5px; color: #fff;" [ngStyle]="{'background-color': form.isPublish ? '#7700ff' : '#524c5a'}" >{{ getPublishType(form.isPublish) }}</div></td>
             <td class="">
 
 
