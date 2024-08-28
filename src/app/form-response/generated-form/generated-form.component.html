@@ -23,7 +23,7 @@
             <div [ngSwitch]="getAnswerTypeName(question.answerTypeId)" class="mb-4">
               <input *ngSwitchCase="'text'" type="text" class="form-control" placeholder="Enter your answer" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
               <input *ngSwitchCase="'number'" type="number" class="form-control" placeholder="Enter your answer" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
-              <input *ngSwitchCase="'date'" type="date" class="form-control" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
+              <input *ngSwitchCase="'date'"  type="date" class="form-control"  (input)="handleOptionSelect($event, null, section, question, questionIndex)">
   
               <div *ngSwitchCase="'radio'">
                 <div *ngFor="let option of question.answerOptions">

@@ -55,6 +55,8 @@ export class GeneratedFormComponent implements OnInit {
       next: (res) => {
         this.formData = res.form;
 
+        console.log(this.formData);
+
         //To sort the sections
         this.formData.sections.sort((a: { slno: number }, b: { slno: number }) => a.slno - b.slno);
 
@@ -94,6 +96,8 @@ export class GeneratedFormComponent implements OnInit {
   handleOptionSelect(event: any, option: any, section: any, question: any, questionIndex: number) {
     const questionId = question.id;
     let answerValue;
+
+    
 
     switch (this.getAnswerTypeName(question.answerTypeId)) {
       case 'radio':
@@ -138,7 +142,10 @@ export class GeneratedFormComponent implements OnInit {
         break;
 
       case 'date':
-        answerValue = event.target.valueAsDate;
+        const date = event.target.valueAsDate;
+        const formattedDate = this.formatDate(date);
+        // answerValue = event.target.valueAsDate;
+        answerValue = formattedDate;
         break;
 
       case 'multi-select':
@@ -257,27 +264,27 @@ export class GeneratedFormComponent implements OnInit {
 
     this.formIsValid = this.checkFormValidity();
 
-    if (!this.formIsValid) {
-      this.formSubmitted = true;
-      return;
-    }
+    // if (!this.formIsValid) {
+    //   this.formSubmitted = true;
+    //   return;
+    // }
 
     this.formSubmitted = false;
 
 
     // Loop through sections and questions
-    // for (const sectionId in this.selectedAnswers) {
-    //   if (this.selectedAnswers.hasOwnProperty(sectionId)) {
-    //     const sectionAnswers = this.selectedAnswers[sectionId];
-    //     console.log(`Section ID: ${sectionId}`);
-    //     for (const questionId in sectionAnswers) {
-    //       if (sectionAnswers.hasOwnProperty(questionId)) {
-    //         const answerValue = sectionAnswers[questionId];
-    //         console.log(`Question ID: ${questionId}, Answer: ${answerValue}`);
-    //       }
-    //     }
-    //   }
-    // }
+    for (const sectionId in this.selectedAnswers) {
+      if (this.selectedAnswers.hasOwnProperty(sectionId)) {
+        const sectionAnswers = this.selectedAnswers[sectionId];
+        console.log(`Section ID: ${sectionId}`);
+        for (const questionId in sectionAnswers) {
+          if (sectionAnswers.hasOwnProperty(questionId)) {
+            const answerValue = sectionAnswers[questionId];
+            console.log(`Question ID: ${questionId}, Answer: ${answerValue}`);
+          }
+        }
+      }
+    }
 
     const outerEmail = this.userEmail || 'anonymous';
 
@@ -351,7 +358,7 @@ export class GeneratedFormComponent implements OnInit {
               break;
 
             case 'date':
-              if (!answer || !(answer instanceof Date) && !/^\d{4}-\d{2}-\d{2}$/.test(answer)) {
+              if (!answer ) {
                 // console.log('Date answer is invalid');
                 this.toastr.warning('Date answer is invalid');
                 return false;
@@ -398,6 +405,18 @@ export class GeneratedFormComponent implements OnInit {
 
   closeWidow() {
     window.close();
+  }
+
+
+
+
+  formatDate(date: Date): string {
+    return `${date.getDate()} ${this.getMonthName(date.getMonth())} ${date.getFullYear()}`;
+  }
+
+  getMonthName(month: number): string {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return monthNames[month];
   }
 }
 

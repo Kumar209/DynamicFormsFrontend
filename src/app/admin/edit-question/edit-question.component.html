@@ -105,7 +105,7 @@
                       style="width: 20px; height: 16px; cursor: pointer" />
                     <label for="addConstraint" style="padding-top: 7px">Add constraint</label>
                   </div>
-  
+              
                   <div class="constraint-checkbox input-wrapper mb-3 col-6 col-md-4" style="
                       flex-direction: row;
                       column-gap: 15px;
@@ -116,35 +116,56 @@
                     <label for="requiredQuestionCheck" style="padding-top: 7px">Required Question</label>
                   </div>
                 </div>
-  
+              
                 <div *ngIf="questionForm.get('addConstraint')?.value" class="constraints-wrapper row">
                   <div class="input-wrapper form-description-wrapper col-12 col-md-4">
                     <label for="constraintDatatype">Data type</label>
-                    <select id="constraintDatatype" formControlName="dataType">
+                    <select id="constraintDatatype" formControlName="dataType" >
                       <option selected value="" disabled>Select data type</option>
                       <option value="string">string</option>
                       <option value="number">number</option>
-                      <option value="date">date</option>
+                      <option value="boolean">boolean</option>
                     </select>
                   </div>
   
+              
                   <div class="input-wrapper form-description-wrapper col-12 col-md-4">
                     <label for="constraintType">Constraints</label>
                     <select id="constraintType" formControlName="constraint">
                       <option selected value="" disabled>
                         Select constraint type
                       </option>
-                      <option value="range">Range</option>
-                      <option value="length">Length</option>
-                      <option value="pattern">Pattern</option>
+  
+                   
+  
+                      <!-- string  -->
+                      <ng-container *ngIf="questionForm.get('dataType')?.value === 'string'">
+                        <option value="minlength">Min length</option>
+                        <option value="maxlength">Max length</option>
+                        <option value="pattern">Pattern</option>
+                      </ng-container>
+  
+                      <!-- number  -->
+                      <ng-container *ngIf="questionForm.get('dataType')?.value === 'number'">
+                        <option value="min">Min</option>
+                        <option value="max">Max</option>
+                        <option value="pattern">Pattern</option>
+                      </ng-container>
+  
+  
+                      <!-- boolean  -->
+                      <ng-container *ngIf="questionForm.get('dataType')?.value === 'boolean'">
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                      </ng-container>
                     </select>
                   </div>
-  
+              
                   <div class="input-wrapper form-name-wrapper col-12 col-md-4">
                     <label for="ConstraintValue">Constraint Value</label>
                     <input type="text" id="ConstraintValue" formControlName="constraintValue" />
                   </div>
-  
+              
                   <div class="input-wrapper form-name-wrapper col-12 col-md-4 mt-3">
                     <label for="ConstraintWarningMessage">Warning Message</label>
                     <input type="text" id="ConstraintWarningMessage" formControlName="warningMessage" />
