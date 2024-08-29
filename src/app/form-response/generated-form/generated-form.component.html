@@ -21,8 +21,17 @@
             <label class="mb-1" >{{ question.question }} <span *ngIf="question.required" style="color: red; font-size: 14px;">*</span></label>
   
             <div [ngSwitch]="getAnswerTypeName(question.answerTypeId)" class="mb-4">
-              <input *ngSwitchCase="'text'" type="text" class="form-control" placeholder="Enter your answer" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
-              <input *ngSwitchCase="'number'" type="number" class="form-control" placeholder="Enter your answer" (input)="handleOptionSelect($event, null, section, question, questionIndex)">
+              <input *ngSwitchCase="'text'" type="text" class="form-control" placeholder="Enter your answer" 
+                      (input)="handleOptionSelect($event, null, section, question, questionIndex) ; handleConstraints($event , section, question, questionIndex)"
+                      
+              >
+
+
+              <input *ngSwitchCase="'number'" type="number" class="form-control" placeholder="Enter your answer" 
+                    (input)="handleOptionSelect($event, null, section, question, questionIndex)"
+              >
+              
+              
               <input *ngSwitchCase="'date'"  type="date" class="form-control"  (input)="handleOptionSelect($event, null, section, question, questionIndex)">
   
               <div *ngSwitchCase="'radio'">
@@ -78,6 +87,23 @@
                   style="color: red; font-weight: bold; font-size: 14px; margin-top: 5px; margin-left: 4px;"
               >
                 * Field is required
+              </div>
+
+
+
+              <!-- <div *ngIf="formSubmittedConstraints && question.constraints && (!selectedAnswers[section.id] || !selectedAnswers[section.id][question.id])" 
+                    style="color: red; font-weight: bold; font-size: 14px; margin-top: 5px; margin-left: 4px;">
+                * {{ question.warningMessage }}
+              </div> -->
+
+              <!-- <div *ngIf="formSubmittedConstraints && question.constraints && !constraintValid[section.id + '_' + question.id]" 
+                  style="color: red; font-weight: bold; font-size: 14px; margin-top: 5px; margin-left: 4px;">
+                * {{ question.warningMessage }}
+              </div> -->
+
+              <div *ngIf="formSubmittedConstraints && !constraintValid[section.id + '_' + question.id]" 
+                  style="color: red; font-weight: bold; font-size: 14px; margin-top: 5px; margin-left: 4px;">
+                * {{ question.warningMessage }}
               </div>
             </div>
 
