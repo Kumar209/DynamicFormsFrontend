@@ -284,6 +284,7 @@ export class GeneratedFormComponent implements OnInit {
     }
 
     this.formSubmittedConstraints = false;
+    this.resetConstraintValid();
 
 
     
@@ -345,10 +346,15 @@ export class GeneratedFormComponent implements OnInit {
   // Add a map to store constraint validation results
 constraintValid: { [key: string]: boolean } = {};
 
+resetConstraintValid() {
+  this.constraintValid = {};
+}
+
 handleConstraints(event: any, section: any, question: any, questionIndex: number) {
   const questionId = question.id;
   const answerType = this.getAnswerTypeName(question.answerTypeId);
-  let constraintValid = true;
+  let constraintValids = false;
+
 
   switch (answerType) {
     case 'text':
@@ -358,17 +364,27 @@ handleConstraints(event: any, section: any, question: any, questionIndex: number
 
       if (textConstraint === "maxlength") {
         if (textValue.length > textConstraintValue) {
-          constraintValid = false;
+          constraintValids = true;
+          this.formSubmittedConstraints = true;
+          this.constraintsIsValid = false;
+          event.target.value = textValue.substring(0, textConstraintValue);
         }
-      } else if (textConstraint === "minlength") {
+      } 
+      else if (textConstraint === "minlength") {
         if (textValue.length < textConstraintValue) {
-          constraintValid = false;
+          constraintValids = true;
+          this.formSubmittedConstraints = true;
+          this.constraintsIsValid = false;
+          event.target.value = textValue.substring(0, textConstraintValue);
         }
-      } else if (textConstraint === "pattern") {
+      } 
+      else if (textConstraint === "pattern") {
         const pattern = new RegExp(textConstraintValue, 'i');
 
         if (!pattern.test(textValue)) {
-          constraintValid = false;
+          constraintValids = true;
+          this.formSubmittedConstraints = true;
+          this.constraintsIsValid = false;
         }
       }
       break;
@@ -380,36 +396,37 @@ handleConstraints(event: any, section: any, question: any, questionIndex: number
 
       if (numberConstraint === "max") {
         if (numberValue > numberConstraintValue) {
-          constraintValid = false;
+          constraintValids = true;
+          this.formSubmittedConstraints = true;
+          this.constraintsIsValid = false;
         }
-      } else if (numberConstraint === "min") {
+      } 
+      else if (numberConstraint === "min") {
         if (numberValue < numberConstraintValue) {
-          constraintValid = false;
+          constraintValids = true;
+          this.formSubmittedConstraints = true;
+          this.constraintsIsValid = false;
         }
       }
       break;
 
     default:
-      constraintValid = true;
+      constraintValids = false;
+      this.constraintsIsValid = true;
   }
 
-  // Store the constraint validation result
-  // this.constraintValid[section.id + '_' + question.id] = constraintValid;
-
-  // Update the overall constraintsIsValid flag
-  // this.constraintsIsValid = Object.values(this.constraintValid).every(valid => valid);
-
-  // if (!constraintValid) {
-  //   this.toastr.warning(`Constraint validation failed for question: ${question.question}`);
-  // }
+    // Store the constraint validation result
+    this.constraintValid[section.id + '_' + question.id] = constraintValids;
 
 
-  if (!constraintValid) {
-    this.toastr.warning(`Constraint validation failed for question: ${question.question}`);
-    this.constraintValid[section.id + '_' + question.id] = false;
-  } else {
-    this.constraintValid[section.id + '_' + question.id] = true;
-  }
+    console.log( this.constraintValid[section.id + '_' + question.id] );
+
+    // Update the overall constraintsIsValid flag
+    this.constraintsIsValid = Object.values(this.constraintValid).every(valid => valid);
+
+    if (constraintValids) {
+      this.toastr.warning(`Constraint validation failed for question: ${question.warningMessage}`);
+    }
 }
 
   

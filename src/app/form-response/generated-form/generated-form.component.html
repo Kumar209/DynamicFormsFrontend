@@ -90,20 +90,14 @@
               </div>
 
 
-
-              <!-- <div *ngIf="formSubmittedConstraints && question.constraints && (!selectedAnswers[section.id] || !selectedAnswers[section.id][question.id])" 
-                    style="color: red; font-weight: bold; font-size: 14px; margin-top: 5px; margin-left: 4px;">
-                * {{ question.warningMessage }}
-              </div> -->
-
-              <!-- <div *ngIf="formSubmittedConstraints && question.constraints && !constraintValid[section.id + '_' + question.id]" 
+              <!-- <div *ngIf="formSubmittedConstraints && !constraintValid[section.id + '_' + question.id]" 
                   style="color: red; font-weight: bold; font-size: 14px; margin-top: 5px; margin-left: 4px;">
                 * {{ question.warningMessage }}
               </div> -->
 
-              <div *ngIf="formSubmittedConstraints && !constraintValid[section.id + '_' + question.id]" 
+              <div *ngIf="formSubmittedConstraints && constraintValid[section.id + '_' + question.id]" 
                   style="color: red; font-weight: bold; font-size: 14px; margin-top: 5px; margin-left: 4px;">
-                * {{ question.warningMessage }}
+                * {{ question.warningMessage || 'Constraint validation failed' }}
               </div>
             </div>
 
