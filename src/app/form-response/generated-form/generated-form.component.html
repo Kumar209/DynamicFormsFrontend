@@ -28,7 +28,7 @@
 
 
               <input *ngSwitchCase="'number'" type="number" class="form-control" placeholder="Enter your answer" 
-                    (input)="handleOptionSelect($event, null, section, question, questionIndex)"
+                    (input)="handleOptionSelect($event, null, section, question, questionIndex)  ; handleConstraints($event , section, question, questionIndex)"
               >
               
               

@@ -267,24 +267,24 @@ export class GeneratedFormComponent implements OnInit {
     //For required variable
     this.formIsValid = this.checkFormValidity();
 
-    //For requried
-    if (!this.formIsValid) {
-      this.formSubmitted = true;
-      return;
-    }
+    // //For requried
+    // if (!this.formIsValid) {
+    //   this.formSubmitted = true;
+    //   return;
+    // }
 
-    //For required
-    this.formSubmitted = false;
+    // //For required
+    // this.formSubmitted = false;
 
 
-    //For constriants 
-    if(!this.constraintsIsValid){
-      this.formSubmittedConstraints = true;
-      return;
-    }
+    // //For constriants 
+    // if(!this.constraintsIsValid){
+    //   this.formSubmittedConstraints = true;
+    //   return;
+    // }
 
-    this.formSubmittedConstraints = false;
-    this.resetConstraintValid();
+    // this.formSubmittedConstraints = false;
+    // this.resetConstraintValid();
 
 
     
@@ -317,26 +317,26 @@ export class GeneratedFormComponent implements OnInit {
     };
 
 
-    // this.responseService.insertFormResponse(responseData, this.formId).subscribe({
-    //   next: (res) => {
-    //     if (res.success) {
-    //       this.toastr.success(res.message);
+    this.responseService.insertFormResponse(responseData, this.formId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.toastr.success(res.message);
 
         
 
-    //       this.router.navigate(['/form-response/form-response-list'], { queryParams: { formId: this.formId } });
-    //     } else {
-    //       this.toastr.error(res.message);
-    //     }
-    //   },
-    //   error: (err) => {
-    //     if (err.error.message) {
-    //       this.toastr.error(err.error.message);
-    //     } else {
-    //       this.toastr.error('Something went wrong');
-    //     }
-    //   }
-    // });
+          this.router.navigate(['/form-response/form-response-list'], { queryParams: { formId: this.formId } });
+        } else {
+          this.toastr.error(res.message);
+        }
+      },
+      error: (err) => {
+        if (err.error.message) {
+          this.toastr.error(err.error.message);
+        } else {
+          this.toastr.error('Something went wrong');
+        }
+      }
+    });
   }
 
 
@@ -349,6 +349,9 @@ constraintValid: { [key: string]: boolean } = {};
 resetConstraintValid() {
   this.constraintValid = {};
 }
+
+
+validationMessage : any ;
 
 handleConstraints(event: any, section: any, question: any, questionIndex: number) {
   const questionId = question.id;
@@ -378,15 +381,16 @@ handleConstraints(event: any, section: any, question: any, questionIndex: number
           event.target.value = textValue.substring(0, textConstraintValue);
         }
       } 
-      else if (textConstraint === "pattern") {
-        const pattern = new RegExp(textConstraintValue, 'i');
+      // else if (textConstraint === "pattern") {
+      //   // const pattern = new RegExp(textConstraintValue, 'i');
+      //   const pattern = new RegExp(textConstraintValue.replace(/\\\\/g, '\\'), 'i');
 
-        if (!pattern.test(textValue)) {
-          constraintValids = true;
-          this.formSubmittedConstraints = true;
-          this.constraintsIsValid = false;
-        }
-      }
+      //   if (!(pattern.test(textValue))) {
+      //     constraintValids = true;
+      //     this.formSubmittedConstraints = true;
+      //     this.constraintsIsValid = false;
+      //   }
+      // }
       break;
 
     case 'number':
@@ -399,6 +403,9 @@ handleConstraints(event: any, section: any, question: any, questionIndex: number
           constraintValids = true;
           this.formSubmittedConstraints = true;
           this.constraintsIsValid = false;
+
+          this.validationMessage=question.warningMessage;
+          event.target.value = numberConstraintValue;
         }
       } 
       else if (numberConstraint === "min") {
@@ -406,6 +413,9 @@ handleConstraints(event: any, section: any, question: any, questionIndex: number
           constraintValids = true;
           this.formSubmittedConstraints = true;
           this.constraintsIsValid = false;
+
+          this.validationMessage=question.warningMessage;
+          event.target.value = numberConstraintValue;
         }
       }
       break;
@@ -413,6 +423,8 @@ handleConstraints(event: any, section: any, question: any, questionIndex: number
     default:
       constraintValids = false;
       this.constraintsIsValid = true;
+      this.formSubmittedConstraints = false;
+
   }
 
     // Store the constraint validation result
@@ -425,7 +437,7 @@ handleConstraints(event: any, section: any, question: any, questionIndex: number
     this.constraintsIsValid = Object.values(this.constraintValid).every(valid => valid);
 
     if (constraintValids) {
-      this.toastr.warning(`Constraint validation failed for question: ${question.warningMessage}`);
+      // this.toastr.warning(`Constraint validation failed for question: ${question.warningMessage}`);
     }
 }
 
