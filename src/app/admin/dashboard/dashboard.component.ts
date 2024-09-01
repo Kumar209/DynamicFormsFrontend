@@ -21,6 +21,7 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     RouterModule
   ],
+  
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })

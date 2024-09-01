@@ -27,14 +27,26 @@ export class AuthService {
 
 
   private storeToken(token: string): void {
-    this.cookieService.set(this.authSecretKey, token, 1, '/');   //Expires in 1 day
+    // this.cookieService.set(this.authSecretKey, token, 1, '/');   //Expires in 1 day
+
+    const expiryMinutes = 60;
+    const expirationDate = new Date();
+    expirationDate.setMinutes(expirationDate.getMinutes() + expiryMinutes);
+
+    // Set the cookie with Secure, HttpOnly flags, and expiration
+    this.cookieService.set(this.authSecretKey, token, {
+        expires: expirationDate, // Set expiration date
+        secure: true,            // Secure flag
+        path: '/'                // Path for the cookie
+    });
   }
 
-  private getToken(): string | null {
-    return this.cookieService.get(this.authSecretKey);
+  getToken(): string | null {
+    var token = this.cookieService.get(this.authSecretKey);
+    return token;
   }
 
-  private deleteToken(): void {
+  deleteToken(): void {
     this.cookieService.delete(this.authSecretKey, '/');
   }
 
