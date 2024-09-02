@@ -11,13 +11,6 @@ import { formResponseInterceptor } from '../interceptors/form-response.intercept
   imports: [
     CommonModule,
     FormResponseRoutingModule
-  ],
-  providers : [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useValue: formResponseInterceptor,
-      multi: true
-    }
   ]
 })
 export class FormResponseModule { }

@@ -9,6 +9,8 @@ import { authGuard } from '../guards/auth.guard';
 import { EditSourceTemplateComponent } from './edit-source-template/edit-source-template.component';
 import { EditQuestionComponent } from './edit-question/edit-question.component';
 import { NotFoundComponent } from '../shared/not-found/not-found.component';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { adminInterceptor } from '../interceptors/admin.interceptor';
 
 const routes: Routes = [
   // {
